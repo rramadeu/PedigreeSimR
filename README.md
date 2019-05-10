@@ -6,6 +6,13 @@ devtools::install_github("rramadeu/PedigreeSimR", auth_token = "86fd0062bbfb8632
 library(PedigreeSimR)
 map = 1:100
 haplotypes = fake_haplo(100,100,seed=1234)
-pedigree = diallel_pedigree(parents=7,popsize=1000,selfs=2)
-pedigreesimR(map,haplotypes,pedigree)
+
+## Diallel pedigree with 7 parents and 2 selfs
+diallel7 = diallel_pedigree(parents=7,popsize=1000,selfs=2)
+pedigreesimR(map,haplotypes,diallel7,ploidy=4)
+
+## Single Round Robin pedigree with 7 parents
+round7 = round_pedigree(parents=7,popsize=1000)
+pedigreesimR(map,haplotypes,round7,ploidy=4)
+
 ```
