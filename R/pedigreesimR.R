@@ -9,7 +9,7 @@
 #' @param prefPairing numeric
 #' @param quadrivalents numeric
 #' @param ploidy integer even number
-#' @param output string with the prefix of the output fule
+#' @param workingfolder string with folder name to write input/output files
 #' @param mapfunction "HALDANE" or "KOSAMBI"
 #' @param chromosome string
 #' @param seed integer to be used to sample haplotypes
