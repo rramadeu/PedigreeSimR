@@ -1,2 +1,5 @@
-exportPattern("^[[:alpha:]]+")
+export(diallel_pedigree)
+export(round_pedigree)
+export(fake_haplo)
+export(pedigreesimR)
 importFrom(stringr,str_pad)
