@@ -11,7 +11,7 @@ devtools::install_github("rramadeu/PedigreeSimR",
 ```R
 library(PedigreeSimR)
 map = 1:100
-haplotypes = fake_haplo(100,100,seed=1234)
+haplotypes = fake_haplo(n=50,m=100,seed=1234)
 
 ## Diallel pedigree with 7 parents and 2 selfs
 diallel7 = diallel_pedigree(parents=7,popsize=1000,selfs=2)

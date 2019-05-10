@@ -9,7 +9,9 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
   workingfolder = "PedigreeSimR_files", mapfunction = "HALDANE",
   chromosome = "A", seed = NULL, allownochiasmata = 1,
   naturalpairing = 1, parallelquadrivalents = 0,
-  pairedcentromeres = 0, mapwidthpad = 4)
+  pairedcentromeres = 0, mapwidthpad = 4, GBS = FALSE,
+  GBSsnpcall = FALSE, GBSseq = 0.001, GBSbias = 0.7, GBSod = 0.005,
+  GBSnc = 1)
 }
 \arguments{
 \item{map}{vector of the marker position.}
@@ -43,6 +45,18 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 \item{pairedcentromeres}{numeric}
 
 \item{mapwidthpad}{numeric length of marker code}
+
+\item{GBS}{if TRUE simulate GBS data and do SNP calling with updog}
+
+\item{GBSsnpcall}{if TRUE performin SNP calling using updog}
+
+\item{GBSseq}{the sequencing error rate (rflexdog inner function)}
+
+\item{GBSbias}{the bias parameter  Pr(a read after selected) / Pr(A read after selected) (rflexdog inner function). (rflexdog inner function)}
+
+\item{GBSod}{the overdispersion parameter (rflexdog inner function).}
+
+\item{GBSnc}{number of cores for the parallelization for SNP calling}
 }
 \value{
 nothing?
@@ -52,7 +66,7 @@ Wrap-up function to run PedigreeSim software
 }
 \examples{
 map = 1:100
-haplotypes = fake_haplo(100,100,seed=1234)
+haplotypes = fake_haplo(m=50,n=100,seed=1234)
 pedigree = diallel_pedigree(parents=7,popsize=1000,selfs=2)
 pedigreesimR(map,haplotypes,pedigree)
 
