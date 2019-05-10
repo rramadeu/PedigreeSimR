@@ -2,7 +2,7 @@
 Wrap-up R package to coordinate PedigreeSim simulations 
 
 ```R
-install_github("rramadeu/PedigreeSimR", auth_token = "86fd0062bbfb8632ba148de55eac260f1095553d")
+devtools::install_github("rramadeu/PedigreeSimR", auth_token = "86fd0062bbfb8632ba148de55eac260f1095553d")
 library(PedigreeSimR)
 map = 1:100
 haplotypes = fake_haplo(100,100,seed=1234)
