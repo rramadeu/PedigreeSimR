@@ -5,13 +5,13 @@
 \title{PedigreeSim Management}
 \usage{
 pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
-  prefPairing = 0, quadrivalents = 0, ploidy = 2,
+  prefPairing = 0, quadrivalents = 0, ploidy = 4,
   workingfolder = "PedigreeSimR_files", mapfunction = "HALDANE",
   chromosome = "A", seed = NULL, allownochiasmata = 1,
   naturalpairing = 1, parallelquadrivalents = 0,
   pairedcentromeres = 0, mapwidthpad = 4, GBS = FALSE,
-  GBSsnpcall = FALSE, GBSseq = 0.001, GBSbias = 0.7, GBSod = 0.005,
-  GBSnc = 1)
+  GBSavgdepth = 60, GBSsnpcall = FALSE, GBSseq = 0.001,
+  GBSbias = 0.7, GBSod = 0.005, GBSnc = 1)
 }
 \arguments{
 \item{map}{vector of the marker position.}
@@ -48,7 +48,9 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 
 \item{GBS}{if TRUE simulate GBS data and do SNP calling with updog}
 
-\item{GBSsnpcall}{if TRUE performin SNP calling using updog}
+\item{GBSavgdepth}{average depth to sample total number of reads from Poisson distribution}
+
+\item{GBSsnpcall}{if TRUE performs SNP calling using updog}
 
 \item{GBSseq}{the sequencing error rate (rflexdog inner function)}
 
@@ -59,10 +61,10 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 \item{GBSnc}{number of cores for the parallelization for SNP calling}
 }
 \value{
-nothing?
+nothing
 }
 \description{
-Wrap-up function to run PedigreeSim software
+Wrap-up function to run PedigreeSim software, to simulate GBS data, and to do SNP calling with updog package
 }
 \examples{
 map = 1:100
