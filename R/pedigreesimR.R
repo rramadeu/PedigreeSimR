@@ -18,6 +18,12 @@
 #' @param parallelquadrivalents numeric
 #' @param pairedcentromeres numeric
 #' @param mapwidthpad numeric length of marker code
+#' @param GBS if TRUE simulate GBS data and do SNP calling with updog
+#' @param GBSseq the sequencing error rate (rflexdog inner function)
+#' @param GBSod the overdispersion parameter (rflexdog inner function).
+#' @param GBSbias the bias parameter  Pr(a read after selected) / Pr(A read after selected) (rflexdog inner function). (rflexdog inner function)
+#' @param GBSsnpcall if TRUE performin SNP calling using updog
+#' @param GBSnc number of cores for the parallelization for SNP calling
 #'
 #' @return nothing?
 #'
@@ -47,10 +53,16 @@ pedigreesimR <- function(map,
                          naturalpairing=1,
                          parallelquadrivalents=0,
                          pairedcentromeres=0,
-                         mapwidthpad=4){
+                         mapwidthpad=4,
+                         GBS = FALSE,
+                         GBSsnpcall = FALSE,
+                         GBSseq = 0.001,
+                         GBSbias = 0.7,
+                         GBSod = 0.005,
+                         GBSnc = 1){
 
   ## Creating map file
-  mapdf = data.frame(marker=paste0(chromosome,"_",str_pad(map,width = mapwidthpad,side = "left",pad = "0")),
+  mapdf = data.frame(marker=paste0(chromosome,"_",str_pad(1:length(map),width = mapwidthpad,side = "left",pad = "0")),
                      chromosome=chromosome,
                      position=map)
 
@@ -90,11 +102,11 @@ pedigreesimR <- function(map,
                              values=c(ploidy,
                                       mapfunction,
                                       "NA",
-                                      paste0(workingfolder,"/input.chrom"),
-                                      paste0(workingfolder,"/input.ped"),
-                                      paste0(workingfolder,"/input.map"),
-                                      paste0(workingfolder,"/input.founder"),
-                                      paste0(workingfolder,"/out"),
+                                      paste0(workingfolder,"/pedsim_input.chrom"),
+                                      paste0(workingfolder,"/pedsim_input.ped"),
+                                      paste0(workingfolder,"/pedsim_input.map"),
+                                      paste0(workingfolder,"/pedsim_input.founder"),
+                                      paste0(workingfolder,"/pedsim_out"),
                                       allownochiasmata,
                                       naturalpairing,
                                       parallelquadrivalents,
@@ -105,14 +117,103 @@ pedigreesimR <- function(map,
   if(is.na(match(workingfolder,list.files())))
     system(paste0("mkdir ",workingfolder))
 
-  write.table(chrdf,file=paste0(workingfolder,"/input.chrom"),row.names = FALSE,quote = FALSE)
-  write.table(pedigree,file=paste0(workingfolder,"/input.ped"),row.names = FALSE,quote = FALSE)
-  write.table(mapdf,file=paste0(workingfolder,"/input.map"),row.names = FALSE,quote = FALSE)
-  write.table(founderdf,file=paste0(workingfolder,"/input.founder"),row.names = FALSE,quote = FALSE)
-  write.table(parameterdf,file=paste0(workingfolder,"/input.par"),row.names = FALSE, col.names=FALSE,quote = FALSE)
+  write.table(chrdf,file=paste0(workingfolder,"/pedsim_input.chrom"),row.names = FALSE,quote = FALSE)
+  write.table(pedigree,file=paste0(workingfolder,"/pedsim_input.ped"),row.names = FALSE,quote = FALSE)
+  write.table(mapdf,file=paste0(workingfolder,"/pedsim_input.map"),row.names = FALSE,quote = FALSE)
+  write.table(founderdf,file=paste0(workingfolder,"/pedsim_input.founder"),row.names = FALSE,quote = FALSE)
+  write.table(parameterdf,file=paste0(workingfolder,"/pedsim_input.par"),row.names = FALSE, col.names=FALSE,quote = FALSE)
 
+  cat("\n Simulating with PedigreeSim \n")
   system(
-    paste0("java -jar ",system.file(package = "PedigreeSimR"),"/PedigreeSim2/PedigreeSim.jar ",workingfolder,"/input.par")
+    paste0("java -jar ",system.file(package = "PedigreeSimR"),"/PedigreeSim2/PedigreeSim.jar ",workingfolder,"/pedsim_input.par")
   )
 
+  ## Formating to PolyOrigin Pedigree
+  levels(pedigree$Parent1)[which(levels(pedigree$Parent1)=="NA")] = "0"
+  levels(pedigree$Parent2)[which(levels(pedigree$Parent2)=="NA")] = "0"
+  pedigree$Population = substr(pedigree$Name,1,3)
+  pedigree$Population[which(nchar(pedigree$Population)==1)] = 0
+  pedigree$Population = as.numeric(as.factor(pedigree$Population))-1
+  pedigree$Ploidy=ploidy
+  pedigree=pedigree[,c(1,4,2,3,5)]
+  names(pedigree) = c("Individual","Population","MotherID","FatherID","Ploidy")
+  write.table(pedigree,file=paste0(workingfolder,"/polyorigin_pedigree.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+
+  ## Sampling sequencing depth
+  if(GBS){
+    cat("\n Sampling GBS data")
+    truegenos = read.table(paste0(workingfolder,"/pedsim_out_alleledose.dat"),header=TRUE)[,-1]
+
+    if(!is.null(seed)) (set.seed(seed))
+    sizemat = matrix(rpois(prod(dim(truegenos)),averagedepth),nrow(truegenos),ncol(truegenos))
+
+    refmat = truegenos*0
+    for(i in 1:nrow(truegenos)){
+      refmat[i,] <- rflexdog(sizevec = as.numeric(sizemat[i,]),
+                             geno    = as.numeric(truegenos[i,]),
+                             ploidy  = ploidy,
+                             seq     = GBSseq,
+                             bias    = GBSbias,
+                             od      = GBSod)
+    }
+
+    if(GBSsnpcall){
+      if(GBSnc==1){
+        cat("\n Doing SNP calling")
+        geno = truegenos*0
+        for(i in 1:nrow(truegenos)){
+          geno[i,]<- flexdog(as.numeric(refmat[i,]),
+                             sizemat[i,],
+                             ploidy=ploidy,
+                             verbose=FALSE,
+                             model="norm")$geno
+        }
+      }else{
+        cat(paste("\n Doing SNP calling with",nc,"cores"))
+        ## number of cores.
+        ## You should change this for your specific computing environment.
+        cl <- parallel::makeCluster(nc)
+        ngenes <- nrow(refmat)
+        doParallel::registerDoParallel(cl = cl)
+        stopifnot(foreach::getDoParWorkers() > 1) ## make sure cluster is set up.
+        geno <- foreach(i = 1:ngenes,
+                        .combine = cbind,
+                        .export = "flexdog") %dopar% {
+                          ## fit flexdog
+                          fout <- flexdog(refvec  = as.numeric(refmat[i,]),
+                                          sizevec = sizemat[i,],
+                                          ploidy  = ploidy,
+                                          model   = "norm",
+                                          verbose = FALSE)
+                          fout$geno
+                        }
+        stopCluster(cl)
+        geno <- t(geno)
+      }
+    }
+    colnames(geno) <- colnames(truegenos)
+    rownames(geno) <- rownames(truegenos)
+  }
+
+  cat("\n Writing PolyOrigin Files")
+  ## Formating to PolyOrigin Genotypic Format
+  truegenos=cbind(mapdf,read.table(paste0(workingfolder,"/pedsim_out_alleledose.dat"),header=TRUE)[,-1])
+  write.table(truegenos,file=paste0(workingfolder,"/polyorigin_geno.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+
+  ## With SNPCalling/Geno Error
+  if(GBS){
+    altmat=as.matrix(sizemat-refmat)
+    refmat=as.matrix(refmat)
+    count=paste0(altmat,"|",refmat)
+    dim(count) <- dim(altmat)
+    colnames(count) <- colnames(altmat)
+    rownames(count) <- rownames(altmat)
+    callinggenos=cbind(truegenos[,1:3],count)
+    write.table(callinggenos,file=paste0(workingfolder,"/polyorigin_geno_GBS.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+  }
+  if(GBSsnpcall){
+    callinggenos=cbind(truegenos[,1:3],geno)
+    write.table(callinggenos,file=paste0(workingfolder,"/polyorigin_geno_GBS_updog.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+  }
+  cat("\n Done!")
 }
