@@ -2,7 +2,7 @@
 % Please edit documentation in R/pedigreesimR.R
 \name{pedigreesimR}
 \alias{pedigreesimR}
-\title{PedigreeSim Management}
+\title{Wrap-up function to run PedigreeSim software, to simulate GBS data, and to do SNP calling with updog package}
 \usage{
 pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
   prefPairing = 0, quadrivalents = 0, ploidy = 4,

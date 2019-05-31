@@ -5,7 +5,7 @@ map = seq(1,3,0.5)
 haplotypes = fake_haplo(m=length(map),n=100,seed=1234)
 pedigree = diallel_pedigree(parents=7,popsize=1000,selfs=2)
 pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=FALSE,GBSnc = 2)
-pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=TRUE,GBSavgdepth = 30,GBSsnpcall=TRUE,GBSnc = 1)
+pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=TRUE,GBSavgdepth = 30)#,GBSsnpcall=TRUE,GBSnc = 1)
 pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=TRUE,GBSsnpcall=TRUE,GBSnc = 2)
 
 ## TetraOrigin Example
