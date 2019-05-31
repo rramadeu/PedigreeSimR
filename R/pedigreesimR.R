@@ -1,4 +1,4 @@
-#' PedigreeSim Management
+' PedigreeSim Management
 #'
 #' Wrap-up function to run PedigreeSim software, to simulate GBS data, and to do SNP calling with updog package
 #'
@@ -19,18 +19,11 @@
 #' @param pairedcentromeres numeric
 #' @param mapwidthpad numeric length of marker code
 #' @param GBS if TRUE simulate GBS data and do SNP calling with updog
-<<<<<<< HEAD
 #' @param GBSavgdepth average depth to sample total number of reads from Poisson distribution
 #' @param GBSseq the sequencing error rate (rflexdog inner function)
 #' @param GBSod the overdispersion parameter (rflexdog inner function).
 #' @param GBSbias the bias parameter  Pr(a read after selected) / Pr(A read after selected) (rflexdog inner function). (rflexdog inner function)
 #' @param GBSsnpcall if TRUE performs SNP calling using updog
-=======
-#' @param GBSseq the sequencing error rate (rflexdog inner function)
-#' @param GBSod the overdispersion parameter (rflexdog inner function).
-#' @param GBSbias the bias parameter  Pr(a read after selected) / Pr(A read after selected) (rflexdog inner function). (rflexdog inner function)
-#' @param GBSsnpcall if TRUE performin SNP calling using updog
->>>>>>> 110c5e81f328f7c9a97827212cd5cebb49721749
 #' @param GBSnc number of cores for the parallelization for SNP calling
 #'
 #' @return nothing
@@ -63,10 +56,7 @@ pedigreesimR <- function(map,
                          pairedcentromeres=0,
                          mapwidthpad=4,
                          GBS = FALSE,
-<<<<<<< HEAD
                          GBSavgdepth=60,
-=======
->>>>>>> 110c5e81f328f7c9a97827212cd5cebb49721749
                          GBSsnpcall = FALSE,
                          GBSseq = 0.001,
                          GBSbias = 0.7,
@@ -100,7 +90,6 @@ pedigreesimR <- function(map,
 
   ## Parameter file
   parameterdf = data.frame(parameter=c("PLOIDY =",
-<<<<<<< HEAD
                                        "MAPFUNCTION =",
                                        "MISSING =",
                                        "CHROMFILE =",
@@ -125,32 +114,6 @@ pedigreesimR <- function(map,
                                     parallelquadrivalents,
                                     pairedcentromeres)
   )
-=======
-                                         "MAPFUNCTION =",
-                                         "MISSING =",
-                                         "CHROMFILE =",
-                                         "PEDFILE =",
-                                         "MAPFILE =",
-                                         "FOUNDERFILE =",
-                                         "OUTPUT =",
-                                         "ALLOWCHIASMATA =",
-                                         "NATURALPAIRING =",
-                                         "PARALLELQUADRIVALENTS =",
-                                         "PAIREDCENTROMERES ="),
-                             values=c(ploidy,
-                                      mapfunction,
-                                      "NA",
-                                      paste0(workingfolder,"/pedsim_input.chrom"),
-                                      paste0(workingfolder,"/pedsim_input.ped"),
-                                      paste0(workingfolder,"/pedsim_input.map"),
-                                      paste0(workingfolder,"/pedsim_input.founder"),
-                                      paste0(workingfolder,"/pedsim_out"),
-                                      allownochiasmata,
-                                      naturalpairing,
-                                      parallelquadrivalents,
-                                      pairedcentromeres)
-                             )
->>>>>>> 110c5e81f328f7c9a97827212cd5cebb49721749
 
   ## Writing files
   if(is.na(match(workingfolder,list.files())))
@@ -184,11 +147,7 @@ pedigreesimR <- function(map,
     truegenos = read.table(paste0(workingfolder,"/pedsim_out_alleledose.dat"),header=TRUE)[,-1]
 
     if(!is.null(seed)) (set.seed(seed))
-<<<<<<< HEAD
     sizemat = matrix(rpois(prod(dim(truegenos)),GBSavgdepth),nrow(truegenos),ncol(truegenos))
-=======
-    sizemat = matrix(rpois(prod(dim(truegenos)),averagedepth),nrow(truegenos),ncol(truegenos))
->>>>>>> 110c5e81f328f7c9a97827212cd5cebb49721749
 
     refmat = truegenos*0
     for(i in 1:nrow(truegenos)){
@@ -212,17 +171,10 @@ pedigreesimR <- function(map,
                              model="norm")$geno
         }
       }else{
-<<<<<<< HEAD
         cat(paste("\n Doing SNP calling with",GBSnc,"cores"))
         ## number of cores.
         ## You should change this for your specific computing environment.
         cl <- parallel::makeCluster(GBSnc)
-=======
-        cat(paste("\n Doing SNP calling with",nc,"cores"))
-        ## number of cores.
-        ## You should change this for your specific computing environment.
-        cl <- parallel::makeCluster(nc)
->>>>>>> 110c5e81f328f7c9a97827212cd5cebb49721749
         ngenes <- nrow(refmat)
         doParallel::registerDoParallel(cl = cl)
         stopifnot(foreach::getDoParWorkers() > 1) ## make sure cluster is set up.
@@ -240,15 +192,9 @@ pedigreesimR <- function(map,
         stopCluster(cl)
         geno <- t(geno)
       }
-<<<<<<< HEAD
       colnames(geno) <- colnames(truegenos)
       rownames(geno) <- rownames(truegenos)
     }
-=======
-    }
-    colnames(geno) <- colnames(truegenos)
-    rownames(geno) <- rownames(truegenos)
->>>>>>> 110c5e81f328f7c9a97827212cd5cebb49721749
   }
 
   cat("\n Writing PolyOrigin Files")
