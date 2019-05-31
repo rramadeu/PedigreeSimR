@@ -1,12 +1,11 @@
 Package: PedigreeSimR
 Type: Package
 Title: Simulate multi-population for linkage analysis in autopolyploids
-Version: 0.1.1000
+Version: 0.1.1001
 Author: Rodrigo R Amadeu
 Maintainer: Rodrigo R Amadeur <rramadeu@ufl.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Description: Desc
+License: GPL-3
 Imports: stringr (>= 1.4.0)
 Encoding: UTF-8
 LazyData: true
