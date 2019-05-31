@@ -51,10 +51,13 @@ round_pedigree <- function(parents=NULL,popsize=NULL,subpopsize=NULL,padsize=4,n
                             width = padsize,
                             pad = 0)
 
+  totalsubpop = popsize/subpopsize
   if(nextinteger==FALSE){
-    totalsubpop = popsize/subpopsize
     subpopsize = rep(subpopsize,totalsubpop)-c(rep(0,totalsubpop-(popsize-origpopsize)),rep(1,popsize-origpopsize))
+  }else{
+    subpopsize = rep(subpopsize,totalsubpop)
   }
+
 
   f1coderobin = NULL
   for(i in 1:subpops)

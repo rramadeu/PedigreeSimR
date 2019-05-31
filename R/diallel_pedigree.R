@@ -56,9 +56,11 @@ diallel_pedigree <- function(parents=NULL,popsize=NULL,subpopsize=NULL,selfs=0,p
                             width = padsize,
                             pad = 0)
 
+  totalsubpop = popsize/subpopsize
   if(nextinteger==FALSE){
-    totalsubpop = popsize/subpopsize
     subpopsize = rep(subpopsize,totalsubpop)-c(rep(0,totalsubpop-(popsize-origpopsize)),rep(1,popsize-origpopsize))
+  }else{
+    subpopsize = rep(subpopsize,totalsubpop)
   }
 
   # Build selfs pedigree
