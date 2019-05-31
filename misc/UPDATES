@@ -1,0 +1,6 @@
+UPDATES
+
+05-31-2019:
+ - Fix GBSavgdepth option (PedigreeSimR)
+ - Fix nextinteger option
+ - Improve description
