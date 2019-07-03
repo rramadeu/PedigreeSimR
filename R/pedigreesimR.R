@@ -12,6 +12,7 @@
 #' @param workingfolder string with folder name to write input/output files
 #' @param mapfunction "HALDANE" or "KOSAMBI"
 #' @param chromosome string
+#' @param sampleHap if TRUE sample haplotypes, pick them in sequence
 #' @param seed integer to be used to sample haplotypes
 #' @param allownochiasmata numeric
 #' @param naturalpairing numeric
@@ -49,6 +50,7 @@ pedigreesimR <- function(map,
                          workingfolder="PedigreeSimR_files",
                          mapfunction="HALDANE",
                          chromosome="A",
+                         sampleHap=TRUE,
                          seed=NULL,
                          allownochiasmata=1,
                          naturalpairing=1,
@@ -82,8 +84,12 @@ pedigreesimR <- function(map,
   founders = pedigree[pedigree[,2]=="NA",1]
   totalfounders = length(founders)
   if(!is.null(seed)) (set.seed(seed))
-  sampledhaplos = sample(1:ncol(haplotypes),totalfounders*ploidy)
-  haplotypes = haplotypes[,sampledhaplos]
+    sampledhaplos = sample(1:ncol(haplotypes),totalfounders*ploidy)
+  if(sampleHap){
+    haplotypes = haplotypes[,sampledhaplos]
+    }else{
+    haplotypes = haplotypes[,1:totalfounders*ploidy]
+  }
   colnames(haplotypes) = paste0(rep(founders,each=ploidy),"_",1:ploidy)
   founderdf = data.frame(marker=mapdf$marker,
                          haplotypes)
