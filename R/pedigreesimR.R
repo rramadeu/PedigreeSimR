@@ -88,7 +88,7 @@ pedigreesimR <- function(map,
   if(sampleHap){
     haplotypes = haplotypes[,sampledhaplos]
     }else{
-    haplotypes = haplotypes[,1:totalfounders*ploidy]
+    haplotypes = haplotypes[,1:c(totalfounders*ploidy)]
   }
   colnames(haplotypes) = paste0(rep(founders,each=ploidy),"_",1:ploidy)
   founderdf = data.frame(marker=mapdf$marker,
