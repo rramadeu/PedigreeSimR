@@ -1,4 +1,4 @@
-' PedigreeSim Management
+#' PedigreeSim Management
 #'
 #' Wrap-up function to run PedigreeSim software, to simulate GBS data, and to do SNP calling with updog package
 #'
