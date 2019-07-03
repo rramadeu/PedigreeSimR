@@ -10,7 +10,7 @@ Imports: stringr (>= 1.4.0),
           updog,
           parallel,
           foreach,
-          doParallel
+          doParallel,
           updog
 Encoding: UTF-8
 LazyData: true
