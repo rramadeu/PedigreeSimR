@@ -123,7 +123,7 @@ pedigreesimR <- function(map,
 
   ## Writing files
   if(is.na(match(workingfolder,list.files())))
-    system(paste0("mkdir ",workingfolder))
+    dir.create(workingfolder)
 
   write.table(chrdf,file=paste0(workingfolder,"/pedsim_input.chrom"),row.names = FALSE,quote = FALSE)
   write.table(pedigree,file=paste0(workingfolder,"/pedsim_input.ped"),row.names = FALSE,quote = FALSE)
