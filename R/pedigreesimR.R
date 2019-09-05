@@ -133,7 +133,7 @@ pedigreesimR <- function(map,
 
   cat("\n Simulating with PedigreeSim \n")
   system(
-    paste0("java -jar ",system.file(package = "PedigreeSimR"),"/PedigreeSim2/PedigreeSim.jar ",workingfolder,"/pedsim_input.par")
+    paste0("java -jar "\",system.file(package = "PedigreeSimR"),"/PedigreeSim2/PedigreeSim.jar\" ",workingfolder,"/pedsim_input.par")
   )
 
   ## Formating to PolyOrigin Pedigree
