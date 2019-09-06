@@ -26,6 +26,7 @@
 #' @param GBSbias the bias parameter  Pr(a read after selected) / Pr(A read after selected) (rflexdog inner function). (rflexdog inner function)
 #' @param GBSsnpcall if TRUE performs SNP calling using updog
 #' @param GBSnc number of cores for the parallelization for SNP calling
+#' @param monoFilter if TRUE filter monomorphic markers from haplotypes
 #'
 #' @return nothing
 #'
@@ -90,6 +91,13 @@ pedigreesimR <- function(map,
     }else{
     haplotypes = haplotypes[,1:c(totalfounders*ploidy)]
   }
+  
+  if(monoFilter){
+    tmp = which(apply(haplotypes,1,var) == 0)
+    haplotypes = haplotypes[-tmp,]
+    mapdf = mapdf[-tmp,]
+  }
+  
   colnames(haplotypes) = paste0(rep(founders,each=ploidy),"_",1:ploidy)
   founderdf = data.frame(marker=mapdf$marker,
                          haplotypes)
