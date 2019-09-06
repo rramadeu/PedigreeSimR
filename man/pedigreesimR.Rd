@@ -11,7 +11,7 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
   allownochiasmata = 1, naturalpairing = 1,
   parallelquadrivalents = 0, pairedcentromeres = 0, mapwidthpad = 4,
   GBS = FALSE, GBSavgdepth = 60, GBSsnpcall = FALSE,
-  GBSseq = 0.001, GBSbias = 0.7, GBSod = 0.005, GBSnc = 1)
+  GBSseq = 0.001, GBSbias = 0.7, GBSod = 0.005, GBSnc = 1, monoFilter = TRUE)
 }
 \arguments{
 \item{map}{vector of the marker position.}
@@ -61,6 +61,8 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 \item{GBSod}{the overdispersion parameter (rflexdog inner function).}
 
 \item{GBSnc}{number of cores for the parallelization for SNP calling}
+             
+\item{monoFilter}{if TRUE filter monomorphic markers from haplotypes}
 }
 \value{
 nothing
