@@ -64,7 +64,8 @@ pedigreesimR <- function(map,
                          GBSseq = 0.001,
                          GBSbias = 0.7,
                          GBSod = 0.005,
-                         GBSnc = 1){
+                         GBSnc = 1,
+                         monoFilter = TRUE){
 
   ## Creating map file
   mapdf = data.frame(marker=paste0(chromosome,"_",str_pad(1:length(map),width = mapwidthpad,side = "left",pad = "0")),
