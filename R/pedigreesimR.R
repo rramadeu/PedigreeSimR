@@ -178,13 +178,14 @@ pedigreesimR <- function(map,
     if(GBSsnpcall){
       if(GBSnc==1){
         cat("\n Doing SNP calling")
-        geno = truegenos*0
+        geno = NULL
         for(i in 1:nrow(truegenos)){
-          geno[i,]<- flexdog(as.numeric(refmat[i,]),
+          fout <- flexdog(as.numeric(refmat[i,]),
                              sizemat[i,],
                              ploidy=ploidy,
                              verbose=FALSE,
-                             model="norm")$geno
+                     model="norm")
+          geno <- cbind(geno,cbind(fout$geno,apply(round(fout$postmat,3),1,paste0,collapse="|")))
         }
       }else{
         cat(paste("\n Doing SNP calling with",GBSnc,"cores"))
