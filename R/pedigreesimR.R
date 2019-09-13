@@ -41,6 +41,7 @@
 #' @export
 #'
 
+
 pedigreesimR <- function(map,
                          haplotypes,
                          pedigree,
@@ -202,15 +203,17 @@ pedigreesimR <- function(map,
                                           ploidy  = ploidy,
                                           model   = "norm",
                                           verbose = FALSE)
-                          fout$geno
+                          cbind(fout$geno,apply(round(fout$postmat,3),1,paste0,collapse="|"))
                         }
+        
         stopCluster(cl)
-        geno <- t(geno)
       }
-      colnames(geno) <- colnames(truegenos)
-      rownames(geno) <- rownames(truegenos)
     }
   }
+
+    indnames <- colnames(truegenos)
+    marknames <- rownames(truegenos)
+
 
   cat("\n Writing PolyOrigin Files")
   ## Formating to PolyOrigin Genotypic Format
@@ -228,9 +231,14 @@ pedigreesimR <- function(map,
     callinggenos=cbind(truegenos[,1:3],count)
     write.table(callinggenos,file=paste0(workingfolder,"/polyorigin_geno_GBS.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
   }
-  if(GBSsnpcall){
-    callinggenos=cbind(truegenos[,1:3],geno)
-    write.table(callinggenos,file=paste0(workingfolder,"/polyorigin_geno_GBS_updog.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    if(GBSsnpcall){
+        postmat <- t(geno[,seq(from=2,to=ncol(geno),by=2)])
+        geno <- t(geno[,seq(from=1,to=ncol(geno),by=2)])
+        colnames(postmat) <- colnames(geno) <- indnames
+        callinggenos=cbind(truegenos[,1:3],geno)
+        callingpostmat=cbind(truegenos[,1:3],postmat)
+        write.table(callinggenos,file=paste0(workingfolder,"/polyorigin_geno_GBS_updog.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+       write.table(callingpostmat,file=paste0(workingfolder,"/polyorigin_geno_GBS_updog_postmat.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
   }
-  cat("\n Done!")
+    cat("\n Done!")
 }
