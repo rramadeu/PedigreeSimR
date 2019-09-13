@@ -2,16 +2,17 @@
 % Please edit documentation in R/pedigreesimR.R
 \name{pedigreesimR}
 \alias{pedigreesimR}
-\title{Wrap-up function to run PedigreeSim software, to simulate GBS data, and to do SNP calling with updog package}
+\title{PedigreeSim Management}
 \usage{
 pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
   prefPairing = 0, quadrivalents = 0, ploidy = 4,
-  workingfolder = "PedigreeSimR_files", mapfunction = "HALDANE",
-  chromosome = "A", sampleHap = TRUE, seed = NULL,
-  allownochiasmata = 1, naturalpairing = 1,
+  workingfolder = "PedigreeSimR_files", filename = "",
+  mapfunction = "HALDANE", chromosome = "A", sampleHap = TRUE,
+  seed = NULL, allownochiasmata = 1, naturalpairing = 1,
   parallelquadrivalents = 0, pairedcentromeres = 0, mapwidthpad = 4,
   GBS = FALSE, GBSavgdepth = 60, GBSsnpcall = FALSE,
-  GBSseq = 0.001, GBSbias = 0.7, GBSod = 0.005, GBSnc = 1, monoFilter = TRUE)
+  GBSseq = 0.001, GBSbias = 0.7, GBSod = 0.005, GBSnc = 1,
+  monoFilter = TRUE)
 }
 \arguments{
 \item{map}{vector of the marker position.}
@@ -29,6 +30,8 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 \item{ploidy}{integer even number}
 
 \item{workingfolder}{string with folder name to write input/output files}
+
+\item{filename}{string with filename id to put in the beggining of the created files}
 
 \item{mapfunction}{"HALDANE" or "KOSAMBI"}
 
@@ -61,7 +64,7 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 \item{GBSod}{the overdispersion parameter (rflexdog inner function).}
 
 \item{GBSnc}{number of cores for the parallelization for SNP calling}
-             
+
 \item{monoFilter}{if TRUE filter monomorphic markers from haplotypes}
 }
 \value{

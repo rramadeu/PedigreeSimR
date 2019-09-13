@@ -50,6 +50,7 @@ pedigreesimR <- function(map,
                          quadrivalents=0,
                          ploidy=4,
                          workingfolder="PedigreeSimR_files",
+                         filename = "",
                          mapfunction="HALDANE",
                          chromosome="A",
                          sampleHap=TRUE,
@@ -93,13 +94,13 @@ pedigreesimR <- function(map,
     }else{
     haplotypes = haplotypes[,1:c(totalfounders*ploidy)]
   }
-  
+
   if(monoFilter){
     tmp = which(apply(haplotypes,1,var) == 0)
     haplotypes = haplotypes[-tmp,]
     mapdf = mapdf[-tmp,]
   }
-  
+
   colnames(haplotypes) = paste0(rep(founders,each=ploidy),"_",1:ploidy)
   founderdf = data.frame(marker=mapdf$marker,
                          haplotypes)
@@ -120,11 +121,11 @@ pedigreesimR <- function(map,
                            values=c(ploidy,
                                     mapfunction,
                                     "NA",
-                                    paste0(workingfolder,"/pedsim_input.chrom"),
-                                    paste0(workingfolder,"/pedsim_input.ped"),
-                                    paste0(workingfolder,"/pedsim_input.map"),
-                                    paste0(workingfolder,"/pedsim_input.founder"),
-                                    paste0(workingfolder,"/pedsim_out"),
+                                    paste0(workingfolder,"/",filename,"pedsim_input.chrom"),
+                                    paste0(workingfolder,"/",filename,"pedsim_input.ped"),
+                                    paste0(workingfolder,"/",filename,"pedsim_input.map"),
+                                    paste0(workingfolder,"/",filename,"pedsim_input.founder"),
+                                    paste0(workingfolder,"/",filename,"pedsim_out"),
                                     allownochiasmata,
                                     naturalpairing,
                                     parallelquadrivalents,
@@ -135,15 +136,15 @@ pedigreesimR <- function(map,
   if(is.na(match(workingfolder,list.files())))
     dir.create(workingfolder)
 
-  write.table(chrdf,file=paste0(workingfolder,"/pedsim_input.chrom"),row.names = FALSE,quote = FALSE)
-  write.table(pedigree,file=paste0(workingfolder,"/pedsim_input.ped"),row.names = FALSE,quote = FALSE)
-  write.table(mapdf,file=paste0(workingfolder,"/pedsim_input.map"),row.names = FALSE,quote = FALSE)
-  write.table(founderdf,file=paste0(workingfolder,"/pedsim_input.founder"),row.names = FALSE,quote = FALSE)
-  write.table(parameterdf,file=paste0(workingfolder,"/pedsim_input.par"),row.names = FALSE, col.names=FALSE,quote = FALSE)
+  write.table(chrdf,file=paste0(workingfolder,"/",filename,"pedsim_input.chrom"),row.names = FALSE,quote = FALSE)
+  write.table(pedigree,file=paste0(workingfolder,"/",filename,"pedsim_input.ped"),row.names = FALSE,quote = FALSE)
+  write.table(mapdf,file=paste0(workingfolder,"/",filename,"pedsim_input.map"),row.names = FALSE,quote = FALSE)
+  write.table(founderdf,file=paste0(workingfolder,"/",filename,"pedsim_input.founder"),row.names = FALSE,quote = FALSE)
+  write.table(parameterdf,file=paste0(workingfolder,"/",filename,"pedsim_input.par"),row.names = FALSE, col.names=FALSE,quote = FALSE)
 
   cat("\n Simulating with PedigreeSim \n")
   system(
-    paste0("java -jar \"",system.file(package = "PedigreeSimR"),"/PedigreeSim2/PedigreeSim.jar\" ",workingfolder,"/pedsim_input.par")
+    paste0("java -jar \"",system.file(package = "PedigreeSimR"),"/PedigreeSim2/PedigreeSim.jar\" ",workingfolder,"/",filename,"pedsim_input.par")
   )
 
   ## Formating to PolyOrigin Pedigree
@@ -155,12 +156,12 @@ pedigreesimR <- function(map,
   pedigree$Ploidy=ploidy
   pedigree=pedigree[,c(1,4,2,3,5)]
   names(pedigree) = c("Individual","Population","MotherID","FatherID","Ploidy")
-  write.table(pedigree,file=paste0(workingfolder,"/polyorigin_pedigree.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+  write.table(pedigree,file=paste0(workingfolder,"/",filename,"polyorigin_pedigree.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
 
+  truegenos = read.table(paste0(workingfolder,"/",filename,"pedsim_out_alleledose.dat"),header=TRUE)[,-1]
   ## Sampling sequencing depth
   if(GBS){
     cat("\n Sampling GBS data")
-    truegenos = read.table(paste0(workingfolder,"/pedsim_out_alleledose.dat"),header=TRUE)[,-1]
 
     if(!is.null(seed)) (set.seed(seed))
     sizemat = matrix(rpois(prod(dim(truegenos)),GBSavgdepth),nrow(truegenos),ncol(truegenos))
@@ -178,13 +179,14 @@ pedigreesimR <- function(map,
     if(GBSsnpcall){
       if(GBSnc==1){
         cat("\n Doing SNP calling")
-        geno = truegenos*0
+        geno = NULL
         for(i in 1:nrow(truegenos)){
-          geno[i,]<- flexdog(as.numeric(refmat[i,]),
+          fout <- flexdog(as.numeric(refmat[i,]),
                              sizemat[i,],
                              ploidy=ploidy,
                              verbose=FALSE,
-                             model="norm")$geno
+                     model="norm")
+          geno <- cbind(geno,cbind(fout$geno,apply(round(fout$postmat,3),1,paste0,collapse="|")))
         }
       }else{
         cat(paste("\n Doing SNP calling with",GBSnc,"cores"))
@@ -205,20 +207,18 @@ pedigreesimR <- function(map,
                                           verbose = FALSE)
                           cbind(fout$geno,apply(round(fout$postmat,3),1,paste0,collapse="|"))
                         }
-        
+
         stopCluster(cl)
       }
     }
   }
 
-    indnames <- colnames(truegenos)
-    marknames <- rownames(truegenos)
-
-
+  indnames <- colnames(truegenos)
+  marknames <- rownames(truegenos)
   cat("\n Writing PolyOrigin Files")
   ## Formating to PolyOrigin Genotypic Format
-  truegenos=cbind(mapdf,read.table(paste0(workingfolder,"/pedsim_out_alleledose.dat"),header=TRUE)[,-1])
-  write.table(truegenos,file=paste0(workingfolder,"/polyorigin_geno.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+  truegenos=cbind(mapdf,read.table(paste0(workingfolder,"/",filename,"pedsim_out_alleledose.dat"),header=TRUE)[,-1])
+  write.table(truegenos,file=paste0(workingfolder,"/",filename,"polyorigin_geno.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
 
   ## With SNPCalling/Geno Error
   if(GBS){
@@ -229,7 +229,7 @@ pedigreesimR <- function(map,
     colnames(count) <- colnames(altmat)
     rownames(count) <- rownames(altmat)
     callinggenos=cbind(truegenos[,1:3],count)
-    write.table(callinggenos,file=paste0(workingfolder,"/polyorigin_geno_GBS.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    write.table(callinggenos,file=paste0(workingfolder,"/",filename,"polyorigin_geno_GBS.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
   }
     if(GBSsnpcall){
         postmat <- t(geno[,seq(from=2,to=ncol(geno),by=2)])
@@ -237,8 +237,8 @@ pedigreesimR <- function(map,
         colnames(postmat) <- colnames(geno) <- indnames
         callinggenos=cbind(truegenos[,1:3],geno)
         callingpostmat=cbind(truegenos[,1:3],postmat)
-        write.table(callinggenos,file=paste0(workingfolder,"/polyorigin_geno_GBS_updog.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-       write.table(callingpostmat,file=paste0(workingfolder,"/polyorigin_geno_GBS_updog_postmat.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+        write.table(callinggenos,file=paste0(workingfolder,"/",filename,"polyorigin_geno_GBS_updog.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+       write.table(callingpostmat,file=paste0(workingfolder,"/",filename,"polyorigin_geno_GBS_updog_postmat.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
   }
     cat("\n Done!")
 }
