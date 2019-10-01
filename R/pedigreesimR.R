@@ -221,6 +221,50 @@ pedigreesimR <- function(map,
   truegenos=cbind(mapdf,read.table(paste0(workingfolder,"/",filename,"pedsim_out_alleledose.dat"),header=TRUE)[,-1])
   write.table(truegenos,file=paste0(workingfolder,"/",filename,"polyorigin_geno.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
 
+  ## Extracting true haplotype information given pedigree
+  truehaplos = read.table(paste0(workingfolder,"/",filename,"pedsim_out_founderalleles.dat"),header=TRUE)[,-1]
+  total.parents = ncol(haplotypes)/ploidy
+  truehaplos = truehaplos[,-(1:(ploidy*total.parents))]
+
+  ## Haplo within info
+  truehaploW = (truehaplos %% ploidy) + 1
+
+  ## Trick to track when self or not and multiple by 4 the correct parent
+  track.selfs = as.character(pedigree$MotherID)!=as.character(pedigree$FatherID)
+  track.selfs = track.selfs[-total.parents]
+  track.selfs = c(sapply(seq_along(self.track), function(i) append(rep(FALSE,length(track.selfs))[i], track.selfs[i], i)))
+  track.selfs = track.selfs*ploidy
+  track.selfs = rep(track.selfs,each=ploidy/2)
+  track.selfs = matrix(rep(track.selfs,nrow(truehaploW)),nrow=nrow(truehaploW),byrow = TRUE)
+
+  ## truehaploW back
+  truehaploW = truehaploW + track.selfs
+
+  inds <- as.character(pedigree$Individual)[-c(1:total.parents)]
+  inds.hap <- rep(inds,each=4)
+
+  truehaploCollapsed = NULL
+  for(i in 1:length(inds)){
+    ind.match = which((match(inds.hap,inds[i]))==1)
+    truehaploCollapsed = cbind(truehaploCollapsed,apply(truehaploW[,ind.match],1,paste,collapse="|"))
+  }
+  colnames(truehaploCollapsed) = inds
+
+  ## Extracting geno position from parents haplotype
+  truehaplos = read.table(paste0(workingfolder,"/",filename,"pedsim_input.founder"),header=TRUE)[,-1]
+  truehaplos = truehaplos+1
+  parents = as.character(pedigree$Individual[1:total.parents])
+  parents.hap <- rep(parents,each=4)
+  parenthaploCollapsed = NULL
+  for(i in 1:length(parents)){
+    ind.match = which((match(parents.hap,parents[i]))==1)
+    parenthaploCollapsed = cbind(parenthaploCollapsed,apply(truehaplos[,ind.match],1,paste,collapse="|"))
+  }
+  colnames(parenthaploCollapsed) = parents
+
+  haploexport = cbind(truegenos[,1:3],parenthaploCollapsed,truehaploCollapsed)
+  write.table(haploexport,file=paste0(workingfolder,"/",filename,"polyorigin_truevalue.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+
   ## With SNPCalling/Geno Error
   if(GBS){
     altmat=as.matrix(sizemat-refmat)
