@@ -10,6 +10,7 @@
 #' @param quadrivalents numeric
 #' @param ploidy integer even number
 #' @param workingfolder string with folder name to write input/output files
+#' @param filename string with filename id to put in the beggining of the created files
 #' @param mapfunction "HALDANE" or "KOSAMBI"
 #' @param chromosome string
 #' @param sampleHap if TRUE sample haplotypes, pick them in sequence
