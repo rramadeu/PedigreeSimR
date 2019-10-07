@@ -246,7 +246,7 @@ pedigreesimR <- function(map,
   truehaploW = truehaploW + track.selfs
 
   inds <- as.character(pedigree$Individual)[-c(1:total.parents)]
-  inds.hap <- rep(inds,each=4)
+  inds.hap <- rep(inds,each=ploidy)
 
   truehaploCollapsed = NULL
   for(i in 1:length(inds)){
@@ -259,7 +259,7 @@ pedigreesimR <- function(map,
   truehaplos = read.table(paste0(workingfolder,"/",filename,"pedsim_input.founder"),header=TRUE)[,-1]
   truehaplos = truehaplos+1
   parents = as.character(pedigree$Individual[1:total.parents])
-  parents.hap <- rep(parents,each=4)
+  parents.hap <- rep(parents,each=ploidy)
   parenthaploCollapsed = NULL
   for(i in 1:length(parents)){
     ind.match = which((match(parents.hap,parents[i]))==1)
