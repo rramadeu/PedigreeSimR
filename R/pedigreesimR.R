@@ -61,6 +61,8 @@ pedigreesimR <- function(map,
                          parallelquadrivalents=0,
                          pairedcentromeres=0,
                          mapwidthpad=4,
+                         epsilon=0,
+                         missing.f=0,
                          GBS = FALSE,
                          GBSavgdepth=60,
                          GBSsnpcall = FALSE,
@@ -98,8 +100,10 @@ pedigreesimR <- function(map,
 
   if(monoFilter){
     tmp = which(apply(haplotypes,1,var) == 0)
-    haplotypes = haplotypes[-tmp,]
-    mapdf = mapdf[-tmp,]
+    if(length(tmp)>0){
+      haplotypes = haplotypes[-tmp,]
+      mapdf = mapdf[-tmp,]
+    }
   }
 
   colnames(haplotypes) = paste0(rep(founders,each=ploidy),"_",1:ploidy)
@@ -158,8 +162,9 @@ pedigreesimR <- function(map,
   pedigree=pedigree[,c(1,4,2,3,5)]
   names(pedigree) = c("Individual","Population","MotherID","FatherID","Ploidy")
   write.table(pedigree,file=paste0(workingfolder,"/",filename,"polyorigin_pedigree.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-
   truegenos = read.table(paste0(workingfolder,"/",filename,"pedsim_out_alleledose.dat"),header=TRUE)[,-1]
+
+
   ## Sampling sequencing depth
   if(GBS){
     cat("\n Sampling GBS data")
@@ -232,7 +237,7 @@ pedigreesimR <- function(map,
   ## Trick to track when self or not and multiple by 4 the correct parent
   track.selfs = as.character(pedigree$MotherID)!=as.character(pedigree$FatherID)
   track.selfs = track.selfs[-total.parents]
-  track.selfs = c(sapply(seq_along(self.track), function(i) append(rep(FALSE,length(track.selfs))[i], track.selfs[i], i)))
+  track.selfs = c(sapply(seq_along(track.selfs), function(i) append(rep(FALSE,length(track.selfs))[i], track.selfs[i], i)))
   track.selfs = track.selfs*ploidy
   track.selfs = rep(track.selfs,each=ploidy/2)
   track.selfs = matrix(rep(track.selfs,nrow(truehaploW)),nrow=nrow(truehaploW),byrow = TRUE)
