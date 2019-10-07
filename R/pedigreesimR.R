@@ -20,6 +20,8 @@
 #' @param parallelquadrivalents numeric
 #' @param pairedcentromeres numeric
 #' @param mapwidthpad numeric length of marker code
+#' @param epsilon vector with two epsilon values for error for genotypic assigment, vector with two values, the first is the parents' epsilon, the second is the offsprings
+#' @param missingFreq vector with two missingFreq values to sample missing values for the genotypes, the first is the parents' frequency, the second is the offsprings
 #' @param GBS if TRUE simulate GBS data and do SNP calling with updog
 #' @param GBSavgdepth average depth to sample total number of reads from Poisson distribution
 #' @param GBSseq the sequencing error rate (rflexdog inner function)
@@ -62,7 +64,7 @@ pedigreesimR <- function(map,
                          pairedcentromeres=0,
                          mapwidthpad=4,
                          epsilon=0,
-                         missing.f=0,
+                         missingFreq=0,
                          GBS = FALSE,
                          GBSavgdepth=60,
                          GBSsnpcall = FALSE,
@@ -166,6 +168,39 @@ pedigreesimR <- function(map,
 
 
   ## Sampling sequencing depth
+  ## Adding genotyping errors
+  total.parents = length(founders)
+
+  if(sum(epsilon>0)){
+      truegenos.par = truegenos[,1:total.parents]
+      truegenos.off = truegenos[,-c(1:total.parents)]
+
+      E.par = matrix(rbinom(prod(dim(truegenos.par)),1,epsilon[1]),nrow=nrow(truegenos.par))
+      which.E.par = which(E.par==1,arr.ind = TRUE)
+      for(i in 1:nrow(which.E.par))
+        truegenos.par[which.E.par[i,1],which.E.par[i,2]] <- sample(c(0:ploidy)[-(truegenos.par[which.E.par[i,1],which.E.par[i,2]]+1)],1)
+
+      E.off = matrix(rbinom(prod(dim(truegenos.off)),1,epsilon[2]),nrow=nrow(truegenos.off))
+      which.E.off = which(E.off==1,arr.ind = TRUE)
+      for(i in 1:nrow(which.E.off))
+        truegenos.off[which.E.off[i,1],which.E.off[i,2]] <- sample(c(0:ploidy)[-(truegenos.off[which.E.off[i,1],which.E.off[i,2]]+1)],1)
+      truegenos.eps = cbind(truegenos.par,truegenos.off)
+  }
+
+
+  if(sum(missingFreq>0)){
+    truegenos.par = truegenos[,1:total.parents]
+    truegenos.off = truegenos[,-c(1:total.parents)]
+
+    F.par = matrix(rbinom(prod(dim(truegenos.par)),1,missingFreq[1]),nrow=nrow(truegenos.par))
+    truegenos.par[which(F.par==1,arr.ind=1)] = NA
+
+    F.off = matrix(rbinom(prod(dim(truegenos.off)),1,missingFreq[2]),nrow=nrow(truegenos.off))
+    truegenos.off[which(F.off==1,arr.ind=1)] = NA
+    truegenos.NA = cbind(truegenos.par,truegenos.off)
+    truegenos.NA = is.na(truegenos.NA)
+  }
+
   if(GBS){
     cat("\n Sampling GBS data")
 
@@ -181,6 +216,8 @@ pedigreesimR <- function(map,
                              bias    = GBSbias,
                              od      = GBSod)
     }
+    if(sum(missingFreq>0))
+      refmat[truegenos.NA] = NA
 
     if(GBSsnpcall){
       if(GBSnc==1){
@@ -219,16 +256,29 @@ pedigreesimR <- function(map,
     }
   }
 
+  cat("\n Writing PolyOrigin Files")
+
+  if(sum(epsilon>0)){
+    write.table(cbind(mapdf,truegenos.eps),file=paste0(workingfolder,"/",filename,"polyorigin_geno_epsilon.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+  }
+
+  if(sum(missingFreq>0)){
+    truegenosNA = truegenos
+    truegenosNA[truegenos.NA] = NA
+    ## Formating to PolyOrigin Genotypic Format
+    write.table(cbind(mapdf,truegenosNA),file=paste0(workingfolder,"/",filename,"polyorigin_geno_missingdata.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+  }
+
   indnames <- colnames(truegenos)
   marknames <- rownames(truegenos)
-  cat("\n Writing PolyOrigin Files")
-  ## Formating to PolyOrigin Genotypic Format
+
+    ## Formating to PolyOrigin Genotypic Format
   truegenos=cbind(mapdf,read.table(paste0(workingfolder,"/",filename,"pedsim_out_alleledose.dat"),header=TRUE)[,-1])
   write.table(truegenos,file=paste0(workingfolder,"/",filename,"polyorigin_geno.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
 
   ## Extracting true haplotype information given pedigree
   truehaplos = read.table(paste0(workingfolder,"/",filename,"pedsim_out_founderalleles.dat"),header=TRUE)[,-1]
-  total.parents = ncol(haplotypes)/ploidy
+  #total.parents = ncol(haplotypes)/ploidy
   truehaplos = truehaplos[,-(1:(ploidy*total.parents))]
 
   ## Haplo within info
@@ -246,7 +296,7 @@ pedigreesimR <- function(map,
   truehaploW = truehaploW + track.selfs
 
   inds <- as.character(pedigree$Individual)[-c(1:total.parents)]
-  inds.hap <- rep(inds,each=4)
+  inds.hap <- rep(inds,each=ploidy)
 
   truehaploCollapsed = NULL
   for(i in 1:length(inds)){
@@ -259,7 +309,7 @@ pedigreesimR <- function(map,
   truehaplos = read.table(paste0(workingfolder,"/",filename,"pedsim_input.founder"),header=TRUE)[,-1]
   truehaplos = truehaplos+1
   parents = as.character(pedigree$Individual[1:total.parents])
-  parents.hap <- rep(parents,each=4)
+  parents.hap <- rep(parents,each=ploidy)
   parenthaploCollapsed = NULL
   for(i in 1:length(parents)){
     ind.match = which((match(parents.hap,parents[i]))==1)
@@ -269,6 +319,7 @@ pedigreesimR <- function(map,
 
   haploexport = cbind(truegenos[,1:3],parenthaploCollapsed,truehaploCollapsed)
   write.table(haploexport,file=paste0(workingfolder,"/",filename,"polyorigin_truevalue.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+
 
   ## With SNPCalling/Geno Error
   if(GBS){

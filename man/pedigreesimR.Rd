@@ -10,9 +10,9 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
   mapfunction = "HALDANE", chromosome = "A", sampleHap = TRUE,
   seed = NULL, allownochiasmata = 1, naturalpairing = 1,
   parallelquadrivalents = 0, pairedcentromeres = 0, mapwidthpad = 4,
-  GBS = FALSE, GBSavgdepth = 60, GBSsnpcall = FALSE,
-  GBSseq = 0.001, GBSbias = 0.7, GBSod = 0.005, GBSnc = 1,
-  monoFilter = TRUE)
+  epsilon = 0, missingFreq = 0, GBS = FALSE, GBSavgdepth = 60,
+  GBSsnpcall = FALSE, GBSseq = 0.001, GBSbias = 0.7, GBSod = 0.005,
+  GBSnc = 1, monoFilter = TRUE)
 }
 \arguments{
 \item{map}{vector of the marker position.}
@@ -50,6 +50,10 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 \item{pairedcentromeres}{numeric}
 
 \item{mapwidthpad}{numeric length of marker code}
+
+\item{epsilon}{vector with two epsilon values for error for genotypic assigment, vector with two values, the first is the parents' epsilon, the second is the offsprings}
+
+\item{missingFreq}{vector with two missingFreq values to sample missing values for the genotypes, the first is the parents' frequency, the second is the offsprings}
 
 \item{GBS}{if TRUE simulate GBS data and do SNP calling with updog}
 
