@@ -63,8 +63,8 @@ pedigreesimR <- function(map,
                          parallelquadrivalents=0,
                          pairedcentromeres=0,
                          mapwidthpad=4,
-                         epsilon=0,
-                         missingFreq=0,
+                         epsilon=c(0,0),
+                         missingFreq=c(0,0),
                          GBS = FALSE,
                          GBSavgdepth=60,
                          GBSsnpcall = FALSE,
@@ -140,8 +140,9 @@ pedigreesimR <- function(map,
   )
 
   ## Writing files
-  if(is.na(match(workingfolder,list.files())))
-    dir.create(workingfolder)
+  if(workingfolder != getwd())
+    if(is.na(match(workingfolder,list.files())))
+      dir.create(workingfolder)
 
   write.table(chrdf,file=paste0(workingfolder,"/",filename,"pedsim_input.chrom"),row.names = FALSE,quote = FALSE)
   write.table(pedigree,file=paste0(workingfolder,"/",filename,"pedsim_input.ped"),row.names = FALSE,quote = FALSE)
@@ -176,14 +177,17 @@ pedigreesimR <- function(map,
       truegenos.off = truegenos[,-c(1:total.parents)]
 
       E.par = matrix(rbinom(prod(dim(truegenos.par)),1,epsilon[1]),nrow=nrow(truegenos.par))
-      which.E.par = which(E.par==1,arr.ind = TRUE)
-      for(i in 1:nrow(which.E.par))
-        truegenos.par[which.E.par[i,1],which.E.par[i,2]] <- sample(c(0:ploidy)[-(truegenos.par[which.E.par[i,1],which.E.par[i,2]]+1)],1)
-
+      if(sum(E.par)>0){
+        which.E.par = which(E.par==1,arr.ind = TRUE)
+        for(i in 1:nrow(which.E.par))
+          truegenos.par[which.E.par[i,1],which.E.par[i,2]] <- sample(c(0:ploidy)[-(truegenos.par[which.E.par[i,1],which.E.par[i,2]]+1)],1)
+      }
       E.off = matrix(rbinom(prod(dim(truegenos.off)),1,epsilon[2]),nrow=nrow(truegenos.off))
-      which.E.off = which(E.off==1,arr.ind = TRUE)
-      for(i in 1:nrow(which.E.off))
-        truegenos.off[which.E.off[i,1],which.E.off[i,2]] <- sample(c(0:ploidy)[-(truegenos.off[which.E.off[i,1],which.E.off[i,2]]+1)],1)
+      if(sum(E.off)>0){
+        which.E.off = which(E.off==1,arr.ind = TRUE)
+        for(i in 1:nrow(which.E.off))
+          truegenos.off[which.E.off[i,1],which.E.off[i,2]] <- sample(c(0:ploidy)[-(truegenos.off[which.E.off[i,1],which.E.off[i,2]]+1)],1)
+      }
       truegenos.eps = cbind(truegenos.par,truegenos.off)
   }
 
@@ -193,10 +197,12 @@ pedigreesimR <- function(map,
     truegenos.off = truegenos[,-c(1:total.parents)]
 
     F.par = matrix(rbinom(prod(dim(truegenos.par)),1,missingFreq[1]),nrow=nrow(truegenos.par))
-    truegenos.par[which(F.par==1,arr.ind=1)] = NA
+    if(sum(F.par)>0)
+      truegenos.par[which(F.par==1,arr.ind=1)] = NA
 
     F.off = matrix(rbinom(prod(dim(truegenos.off)),1,missingFreq[2]),nrow=nrow(truegenos.off))
-    truegenos.off[which(F.off==1,arr.ind=1)] = NA
+    if(sum(F.off)>0)
+      truegenos.off[which(F.off==1,arr.ind=1)] = NA
     truegenos.NA = cbind(truegenos.par,truegenos.off)
     truegenos.NA = is.na(truegenos.NA)
   }
