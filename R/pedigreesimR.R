@@ -232,7 +232,7 @@ pedigreesimR <- function(map,
   ## Trick to track when self or not and multiple by 4 the correct parent
   track.selfs = as.character(pedigree$MotherID)!=as.character(pedigree$FatherID)
   track.selfs = track.selfs[-total.parents]
-  track.selfs = c(sapply(seq_along(self.track), function(i) append(rep(FALSE,length(track.selfs))[i], track.selfs[i], i)))
+  track.selfs = c(sapply(seq_along(track.selfs), function(i) append(rep(FALSE,length(track.selfs))[i], track.selfs[i], i)))
   track.selfs = track.selfs*ploidy
   track.selfs = rep(track.selfs,each=ploidy/2)
   track.selfs = matrix(rep(track.selfs,nrow(truehaploW)),nrow=nrow(truehaploW),byrow = TRUE)
