@@ -7,12 +7,13 @@
 pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
   prefPairing = 0, quadrivalents = 0, ploidy = 4,
   workingfolder = "PedigreeSimR_files", filename = "",
-  mapfunction = "HALDANE", chromosome = "A", sampleHap = TRUE,
+  mapfunction = "HALDANE", chromosome = "A", sampleHap = FALSE,
   seed = NULL, allownochiasmata = 1, naturalpairing = 1,
   parallelquadrivalents = 0, pairedcentromeres = 0, mapwidthpad = 4,
   epsilon = c(0, 0), missingFreq = c(0, 0), GBS = FALSE,
   GBSavgdepth = 60, GBSsnpcall = FALSE, GBSseq = 0.001,
-  GBSbias = 0.7, GBSod = 0.005, GBSnc = 1, monoFilter = TRUE)
+  GBSbias = 0.7, GBSod = 0.005, GBSnc = 1, monoFilter = TRUE,
+  trackErrorSim = FALSE)
 }
 \arguments{
 \item{map}{vector of the marker position.}
@@ -37,7 +38,7 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 
 \item{chromosome}{string}
 
-\item{sampleHap}{if TRUE sample haplotypes, pick them in sequence}
+\item{sampleHap}{if TRUE sample haplotypes, if FALSE pick them in sequence}
 
 \item{seed}{integer to be used to sample haplotypes}
 
@@ -70,6 +71,8 @@ pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
 \item{GBSnc}{number of cores for the parallelization for SNP calling}
 
 \item{monoFilter}{if TRUE filter monomorphic markers from haplotypes}
+
+\item{trackErrorSim}{if TRUE create a spreadsheet with the simulate error positions given epsilon and missingData (1 if error, 0 if not)}
 }
 \value{
 nothing
