@@ -13,7 +13,7 @@
 #' @param filename string with filename id to put in the beggining of the created files
 #' @param mapfunction "HALDANE" or "KOSAMBI"
 #' @param chromosome string
-#' @param sampleHap if TRUE sample haplotypes, pick them in sequence
+#' @param sampleHap if TRUE sample haplotypes, if FALSE pick them in sequence
 #' @param seed integer to be used to sample haplotypes
 #' @param allownochiasmata numeric
 #' @param naturalpairing numeric
@@ -30,6 +30,7 @@
 #' @param GBSsnpcall if TRUE performs SNP calling using updog
 #' @param GBSnc number of cores for the parallelization for SNP calling
 #' @param monoFilter if TRUE filter monomorphic markers from haplotypes
+#' @param trackErrorSim if TRUE create a spreadsheet with the simulate error positions given epsilon and missingData (1 if error, 0 if not)
 #'
 #' @return nothing
 #'
@@ -56,7 +57,7 @@ pedigreesimR <- function(map,
                          filename = "",
                          mapfunction="HALDANE",
                          chromosome="A",
-                         sampleHap=TRUE,
+                         sampleHap=FALSE,
                          seed=NULL,
                          allownochiasmata=1,
                          naturalpairing=1,
@@ -72,7 +73,8 @@ pedigreesimR <- function(map,
                          GBSbias = 0.7,
                          GBSod = 0.005,
                          GBSnc = 1,
-                         monoFilter = TRUE){
+                         monoFilter = TRUE,
+                         trackErrorSim = FALSE){
 
   ## Creating map file
   mapdf = data.frame(marker=paste0(chromosome,"_",str_pad(1:length(map),width = mapwidthpad,side = "left",pad = "0")),
@@ -266,6 +268,10 @@ pedigreesimR <- function(map,
 
   if(sum(epsilon>0)){
     write.table(cbind(mapdf,truegenos.eps),file=paste0(workingfolder,"/",filename,"polyorigin_geno_epsilon.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    if(trackErrorSim){
+      truegenos.eps.track=ifelse(truegenos.eps!=truegenos,1,0)
+      write.table(cbind(mapdf,truegenos.eps.track),file=paste0(workingfolder,"/",filename,"polyorigin_geno_epsilon_track.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    }
   }
 
   if(sum(missingFreq>0)){
@@ -273,12 +279,15 @@ pedigreesimR <- function(map,
     truegenosNA[truegenos.NA] = NA
     ## Formating to PolyOrigin Genotypic Format
     write.table(cbind(mapdf,truegenosNA),file=paste0(workingfolder,"/",filename,"polyorigin_geno_missingdata.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    if(trackErrorSim){
+      write.table(cbind(mapdf,ifelse(is.na(truegenosNA),1,0)),file=paste0(workingfolder,"/",filename,"polyorigin_geno_missingdata_track.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    }
   }
 
   indnames <- colnames(truegenos)
   marknames <- rownames(truegenos)
 
-    ## Formating to PolyOrigin Genotypic Format
+  ## Formating to PolyOrigin Genotypic Format
   truegenos=cbind(mapdf,read.table(paste0(workingfolder,"/",filename,"pedsim_out_alleledose.dat"),header=TRUE)[,-1])
   write.table(truegenos,file=paste0(workingfolder,"/",filename,"polyorigin_geno.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
 
