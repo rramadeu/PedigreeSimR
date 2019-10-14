@@ -209,21 +209,42 @@ pedigreesimR <- function(map,
     truegenos.NA = is.na(truegenos.NA)
   }
 
+  if(sum(epsilon>0)){
+    #write.table(cbind(mapdf,truegenos.eps),file=paste0(workingfolder,"/",filename,"polyorigin_geno_epsilon.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    if(trackErrorSim){
+      truegenos.eps.track=ifelse(truegenos.eps!=truegenos,1,0)
+      write.table(cbind(mapdf,truegenos.eps.track),file=paste0(workingfolder,"/",filename,"polyorigin_geno_epsilon_track.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    }
+  }
+
+  if(sum(missingFreq>0)){
+    truegenosNA = truegenos
+    truegenosNA[truegenos.NA] = NA
+    ## Formating to PolyOrigin Genotypic Format
+    write.table(cbind(mapdf,truegenosNA),file=paste0(workingfolder,"/",filename,"polyorigin_geno_snparray.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    if(trackErrorSim){
+      write.table(cbind(mapdf,ifelse(is.na(truegenosNA),1,0)),file=paste0(workingfolder,"/",filename,"polyorigin_geno_missingdata_track.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    }
+  }
+
   if(GBS){
     cat("\n Sampling GBS data")
+    if(sum(epsilon==0))
+      truegenos.eps = truegenos
 
     if(!is.null(seed)) (set.seed(seed))
-    sizemat = matrix(rpois(prod(dim(truegenos)),GBSavgdepth),nrow(truegenos),ncol(truegenos))
+    sizemat = matrix(rpois(prod(dim(truegenos.eps)),GBSavgdepth),nrow(truegenos.eps),ncol(truegenos.eps))
 
-    refmat = truegenos*0
-    for(i in 1:nrow(truegenos)){
+    refmat = truegenos.eps*0
+    for(i in 1:nrow(truegenos.eps)){
       refmat[i,] <- rflexdog(sizevec = as.numeric(sizemat[i,]),
-                             geno    = as.numeric(truegenos[i,]),
+                             geno    = as.numeric(truegenos.eps[i,]),
                              ploidy  = ploidy,
                              seq     = GBSseq,
                              bias    = GBSbias,
                              od      = GBSod)
     }
+
     if(sum(missingFreq>0))
       refmat[truegenos.NA] = NA
 
@@ -265,24 +286,6 @@ pedigreesimR <- function(map,
   }
 
   cat("\n Writing PolyOrigin Files")
-
-  if(sum(epsilon>0)){
-    write.table(cbind(mapdf,truegenos.eps),file=paste0(workingfolder,"/",filename,"polyorigin_geno_epsilon.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-    if(trackErrorSim){
-      truegenos.eps.track=ifelse(truegenos.eps!=truegenos,1,0)
-      write.table(cbind(mapdf,truegenos.eps.track),file=paste0(workingfolder,"/",filename,"polyorigin_geno_epsilon_track.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-    }
-  }
-
-  if(sum(missingFreq>0)){
-    truegenosNA = truegenos
-    truegenosNA[truegenos.NA] = NA
-    ## Formating to PolyOrigin Genotypic Format
-    write.table(cbind(mapdf,truegenosNA),file=paste0(workingfolder,"/",filename,"polyorigin_geno_missingdata.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-    if(trackErrorSim){
-      write.table(cbind(mapdf,ifelse(is.na(truegenosNA),1,0)),file=paste0(workingfolder,"/",filename,"polyorigin_geno_missingdata_track.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-    }
-  }
 
   indnames <- colnames(truegenos)
   marknames <- rownames(truegenos)
@@ -338,6 +341,7 @@ pedigreesimR <- function(map,
 
   ## With SNPCalling/Geno Error
   if(GBS){
+
     altmat=as.matrix(sizemat-refmat)
     refmat=as.matrix(refmat)
     count=paste0(altmat,"|",refmat)
