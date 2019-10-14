@@ -218,7 +218,9 @@ pedigreesimR <- function(map,
   }
 
   if(sum(missingFreq>0)){
-    truegenosNA = truegenos
+    if(sum(epsilon==0))
+      truegenos.eps = truegenos
+    truegenosNA = truegenos.eps
     truegenosNA[truegenos.NA] = NA
     ## Formating to PolyOrigin Genotypic Format
     write.table(cbind(mapdf,truegenosNA),file=paste0(workingfolder,"/",filename,"polyorigin_geno_snparray.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
