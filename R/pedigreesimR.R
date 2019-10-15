@@ -216,9 +216,9 @@ pedigreesimR <- function(map,
     truegenosNA[truegenos.NA] = NA
     ## Formating to PolyOrigin Genotypic Format
     write.table(cbind(mapdf,truegenosNA),file=paste0(workingfolder,"/",filename,"polyorigin_geno_snparray.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-    if(trackErrorSim){
-      write.table(cbind(mapdf,ifelse(is.na(truegenosNA),1,0)),file=paste0(workingfolder,"/",filename,"polyorigin_geno_missingdata_track.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-    }
+    #if(trackErrorSim){
+    #  write.table(cbind(mapdf,ifelse(is.na(truegenosNA),1,0)),file=paste0(workingfolder,"/",filename,"polyorigin_geno_missingdata_track.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+    #}
   }else{
     if(sum(epsilon==0))
       truegenos.eps = truegenos
