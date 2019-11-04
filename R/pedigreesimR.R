@@ -330,10 +330,32 @@ pedigreesimR <- function(map,
     parenthaploCollapsed = cbind(parenthaploCollapsed,apply(truehaplos[,ind.match],1,paste,collapse="|"))
   }
   colnames(parenthaploCollapsed) = parents
-
   haploexport = cbind(truegenos[,1:3],parenthaploCollapsed,truehaploCollapsed)
-  write.table(haploexport,file=paste0(workingfolder,"/",filename,"polyorigin_truevalue.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+  write.table(haploexport,file=paste0(workingfolder,"/",filename,"polyorigin_truevalue_ancestral.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
 
+
+  ## Extracting geno position from parents haplotype (just presence/absence information)
+  inds <- as.character(pedigree$Individual)
+  inds.hap <- rep(inds,each=ploidy)
+
+  truehaplos = read.table(paste0(workingfolder,"/",filename,"pedsim_out_founderalleles.dat"),header=TRUE)[,-1]
+  genofounders = read.table(paste0(workingfolder,"/",filename,"pedsim_input.founder"),header=TRUE)[,-1]
+  genofounders = genofounders+1
+  truehaplos10 = truehaplos
+  for(i in 1:nrow(truehaplos)){
+    tmp = factor(truehaplos[i,],levels=as.character(0:(ploidy*total.parents-1)))
+    levels(tmp) = as.numeric(genofounders[i,])
+    truehaplos10[i,] = tmp
+  }
+
+  truehaploCollapsed = NULL
+  for(i in 1:length(inds)){
+    ind.match = which((match(inds.hap,inds[i]))==1)
+    truehaploCollapsed = cbind(truehaploCollapsed,apply(truehaplos10[,ind.match],1,paste,collapse="|"))
+  }
+  colnames(truehaploCollapsed) = inds
+  haploexport = cbind(truegenos[,1:3],truehaploCollapsed)
+  write.table(haploexport,file=paste0(workingfolder,"/",filename,"polyorigin_truevalue.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
 
   if(sum(epsilon>0)){
     if(trackErrorSim){
@@ -342,12 +364,14 @@ pedigreesimR <- function(map,
       truegenos.eps.track=ifelse(truegenos.eps!=truegenos.track,1,0)
       track.index=which(truegenos.eps.track==1)
       track.index.arr=which(truegenos.eps.track==1,arr.ind = TRUE)
-      truegenos.eps.track= data.frame(mapdf[track.index.arr[,1],],
-                                      pedigree[track.index.arr[,2],c(1,3,4)],
-                                      wrongdosage=as.matrix(truegenos.eps)[track.index],
-                                      truedosage=as.matrix(truegenos.track)[track.index],
-                                      truephases=as.matrix(haploexport)[track.index])
-      write.table(truegenos.eps.track,file=paste0(workingfolder,"/",filename,"polyorigin_geno_track_snparray.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+      truegenos.eps.track=data.frame(mapdf[track.index.arr[,1],],
+                                     pedigree[track.index.arr[,2],c(1,3,4)],
+                                     wrongdosage=as.matrix(truegenos.eps)[track.index],
+                                     truedosage=as.matrix(truegenos.track)[track.index],
+                                     truephases=as.matrix(haploexport)[track.index],
+                                     na=as.matrix(truegenos.NA)[track.index])
+      truegenos.eps.track = truegenos.eps.track[-truegenos.eps.track$na,-10]
+      write.table(truegenos.eps.track,file=paste0(workingfolder,"/",filename,"polyorigin_geno_snparray_errortrack.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
     }
   }
 
