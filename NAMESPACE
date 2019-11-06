@@ -1,5 +1,7 @@
 export(diallel_pedigree)
 export(round_pedigree)
+export(star_pedigree)
+export(linear_pedigree)
 export(fake_haplo)
 export(pedigreesimR)
 import(stringr)
