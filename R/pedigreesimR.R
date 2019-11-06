@@ -60,7 +60,7 @@ pedigreesimR <- function(map,
                          sampleHap=FALSE,
                          seed=NULL,
                          allownochiasmata=1,
-                         naturalpairing=1,
+                         naturalpairing=0,
                          parallelquadrivalents=0,
                          pairedcentromeres=0,
                          mapwidthpad=4,
@@ -123,7 +123,7 @@ pedigreesimR <- function(map,
                                        "MAPFILE =",
                                        "FOUNDERFILE =",
                                        "OUTPUT =",
-                                       "ALLOWCHIASMATA =",
+                                       "ALLOWNOCHIASMATA =",
                                        "NATURALPAIRING =",
                                        "PARALLELQUADRIVALENTS =",
                                        "PAIREDCENTROMERES ="),
@@ -300,7 +300,7 @@ pedigreesimR <- function(map,
 
   ## Trick to track when self or not and multiple by 4 the correct parent
   track.selfs = as.character(pedigree$MotherID)!=as.character(pedigree$FatherID)
-  track.selfs = track.selfs[-total.parents]
+  track.selfs = track.selfs[-(1:total.parents)]
   track.selfs = c(sapply(seq_along(track.selfs), function(i) append(rep(FALSE,length(track.selfs))[i], track.selfs[i], i)))
   track.selfs = track.selfs*ploidy
   track.selfs = rep(track.selfs,each=ploidy/2)
@@ -308,7 +308,6 @@ pedigreesimR <- function(map,
 
   ## truehaploW back
   truehaploW = truehaploW + track.selfs
-
   inds <- as.character(pedigree$Individual)[-c(1:total.parents)]
   inds.hap <- rep(inds,each=ploidy)
 
@@ -332,7 +331,6 @@ pedigreesimR <- function(map,
   colnames(parenthaploCollapsed) = parents
   haploexport = cbind(truegenos[,1:3],parenthaploCollapsed,truehaploCollapsed)
   write.table(haploexport,file=paste0(workingfolder,"/",filename,"polyorigin_truevalue_ancestral.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
-
 
   ## Extracting geno position from parents haplotype (just presence/absence information)
   inds <- as.character(pedigree$Individual)
