@@ -14,7 +14,7 @@ diallel_pedigree(parents = NULL, popsize = NULL, subpopsize = NULL,
 
 \item{subpopsize}{subpopulation size.}
 
-\item{selfs}{seed to be used in the sampling}
+\item{selfs}{number of selfed populations}
 
 \item{nextinteger}{if TRUE all the subpopulations will have same size, total population size will changed accordingly to the next possible integer, if FALSE sub populations will be unbalenced}
 

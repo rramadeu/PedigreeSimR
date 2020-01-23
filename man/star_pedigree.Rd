@@ -11,14 +11,12 @@ star_pedigree(parents = 4, popsize = 100, selfs = 1, padsize = 4)
 
 \item{popsize}{population size.}
 
-\item{selfs}{seed to be used in the sampling}
+\item{selfs}{number of selfed populations}
 
-\item{padize}{string length for the individual name number}
-
-\item{nextinteger}{if TRUE all the subpopulations will have same size, total population size will changed accordingly to the next possible integer, if FALSE sub populations will be unbalenced}
+\item{padsize}{string length for the individual name number}
 }
 \value{
-half-diallel pedigree.
+star pedigree.
 }
 \description{
 Build star pedigree based on number of parents, number of selfs, and population size
