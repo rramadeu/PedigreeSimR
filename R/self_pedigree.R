@@ -18,7 +18,12 @@
 #' @export
 
 self_pedigree <- function(parents=NULL,popsize=NULL,padsize=4,nextinteger=FALSE){
-  pedigree = diallel_pedigree(parents=parents,subpopsize=popsize/parents,selfs=parents,padsize=padsize)
-  pedigree = pedigree[c(1:(popsize+parents)),]
+  if(parents>1){
+    pedigree = diallel_pedigree(parents=(parents+1),subpopsize=popsize/parents,selfs=parents,padsize=padsize)
+    pedigree = pedigree[c(1:(popsize+parents)),]
+  }else{
+    pedigree = diallel_pedigree(parents=(parents+1),subpopsize=popsize,selfs=(parents+1),padsize=padsize)
+    pedigree = pedigree[c(1,(3:(popsize+2))),]
+  }
   return(pedigree)
 }
