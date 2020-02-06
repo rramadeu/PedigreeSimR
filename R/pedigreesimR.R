@@ -175,8 +175,8 @@ pedigreesimR <- function(map,
   total.parents = length(founders)
 
   if(sum(epsilon>0)){
-      truegenos.par = truegenos[,1:total.parents]
-      truegenos.off = truegenos[,-c(1:total.parents)]
+      truegenos.par = as.matrix(truegenos[,1:total.parents])
+      truegenos.off = as.matrix(truegenos[,-c(1:total.parents)])
 
       E.par = matrix(rbinom(prod(dim(truegenos.par)),1,epsilon[1]),nrow=nrow(truegenos.par))
       if(sum(E.par)>0){
