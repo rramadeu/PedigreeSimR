@@ -177,6 +177,7 @@ pedigreesimR <- function(map,
   if(sum(epsilon>0)){
       truegenos.par = as.matrix(truegenos[,1:total.parents])
       truegenos.off = as.matrix(truegenos[,-c(1:total.parents)])
+      colnames(truegenos.par) = founders
 
       E.par = matrix(rbinom(prod(c(length(truegenos.par),1)),1,epsilon[1]),nrow=length(truegenos.par))
       E.par = matrix(rbinom(prod(dim(truegenos.par)),1,epsilon[1]),nrow=nrow(truegenos.par))
@@ -197,8 +198,9 @@ pedigreesimR <- function(map,
 
 
   if(sum(missingFreq>0)){
-    truegenos.par = truegenos[,1:total.parents]
-    truegenos.off = truegenos[,-c(1:total.parents)]
+    truegenos.par = as.matrix(truegenos[,1:total.parents])
+    truegenos.off = as.matrix(truegenos[,-c(1:total.parents)])
+    colnames(truegenos.par) = founders
 
     F.par = matrix(rbinom(prod(dim(truegenos.par)),1,missingFreq[1]),nrow=nrow(truegenos.par))
     if(sum(F.par)>0)
