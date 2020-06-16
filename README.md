@@ -3,6 +3,7 @@ Wrap-up R package to coordinate PedigreeSim simulations ```
 
 # Basic usage
 ```R
+devtools::install_github("rramadeu/PedigreeSimR")
 library(PedigreeSimR)
 map = 1:100
 haplotypes = fake_haplo(n=50,m=100,seed=1234)
