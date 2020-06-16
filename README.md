@@ -1,11 +1,5 @@
 # PedigreeSimR
-Wrap-up R package to coordinate PedigreeSim simulations 
-
-# Installing
-```R
-devtools::install_github("rramadeu/PedigreeSimR", 
-                         auth_token = "47b8aa6fe594e5c42efc7f4c0b951a2efc0b6663")
-``` 
+Wrap-up R package to coordinate PedigreeSim simulations ``` 
 
 # Basic usage
 ```R
