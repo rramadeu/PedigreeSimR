@@ -5,10 +5,13 @@ PedigreeSim reference/link:
 
 Voorrips, R. E., & Maliepaard, C. A. (2012). The simulation of meiosis in diploid and tetraploid organisms using various genetic models. BMC bioinformatics, 13(1), 248. [https://www.wur.nl/en/show/Software-PedigreeSim.htm](https://www.wur.nl/en/show/Software-PedigreeSim.htm)
 
-# Basic usage
+# Basic usage in R
 ```R
+## Installing this PedigreeSimR package
 devtools::install_github("rramadeu/PedigreeSimR")
 library(PedigreeSimR)
+
+## Creating a fake map (here you add a real map with haplotypes)
 map = 1:100
 haplotypes = fake_haplo(n=50,m=100,seed=1234)
 
