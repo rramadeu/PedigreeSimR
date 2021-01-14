@@ -1,7 +1,17 @@
 # PedigreeSimR
 Wrap-up R package to coordinate `PedigreeSim` simulations for classic breeder mating designs in outcrossing plants. It also simulates genotypic data from GBS. This package uses some `updog` package functions for the simulation of the genotypes and GBS data.
 
-References:
+# Citation
+
+I created PedigreeSimR as an auxiliary package to do the simulations for these two manuscripts:
+
+Amadeu, R. R., Munoz, P., Zheng, C., & Endelman, J. B. (2020). QTL Mapping in Outbred Tetraploid (and Diploid) Diallel Populations. bioRxiv. [https://doi.org/10.1101/2020.12.18.423479](https://doi.org/10.1101/2020.12.18.423479)
+
+Zheng, C., Amadeu, R. R., Munoz, P., & Endelman, J. B. (2020). Haplotype reconstruction in connected tetraploid F1 populations. bioRxiv. [https://doi.org/10.1101/2020.12.18.423519](https://doi.org/10.1101/2020.12.18.423519)
+
+As there is no proper manuscript, you can cite either of those two pre-prints as reference source by now.
+
+# References:
 
 [PedigreeSim](https://www.wur.nl/en/show/Software-PedigreeSim.htm):
 
@@ -12,6 +22,7 @@ Voorrips, R. E., & Maliepaard, C. A. (2012). The simulation of meiosis in diploi
 Gerard D., Ferrão L., Garcia A., Stephens M. (2018). Genotyping Polyploids from Messy Sequencing Data. Genetics, 210(3), 789–807. ISSN 0016-6731
 
 Gerard D., & Ferrão L. (2020). Priors for Genotyping Polyploids. Bioinformatics, 36(6), 1795–1800. ISSN 1367-4803
+
 
 
 # Basic usage in R
