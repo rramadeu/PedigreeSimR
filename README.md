@@ -3,7 +3,7 @@ Wrap-up R package to coordinate `PedigreeSim` simulations for classic breeder ma
 
 # Citation
 
-I created PedigreeSimR as an auxiliary package to do the simulations for these two manuscripts:
+I created PedigreeSimR as an auxiliary package to do the simulations for these two manuscripts (pre-prints):
 
 Amadeu, R. R., Munoz, P., Zheng, C., & Endelman, J. B. (2020). QTL Mapping in Outbred Tetraploid (and Diploid) Diallel Populations. bioRxiv. [https://doi.org/10.1101/2020.12.18.423479](https://doi.org/10.1101/2020.12.18.423479)
 
