@@ -6,7 +6,7 @@ References:
 [PedigreeSim](https://www.wur.nl/en/show/Software-PedigreeSim.htm)
 Voorrips, R. E., & Maliepaard, C. A. (2012). The simulation of meiosis in diploid and tetraploid organisms using various genetic models. BMC bioinformatics, 13(1), 248.
 
-(updog)[https://CRAN.R-project.org/package=updog]
+[updog](https://CRAN.R-project.org/package=updog)
 Gerard D, Ferrão L, Garcia A, Stephens M (2018). Genotyping Polyploids from Messy Sequencing Data. Genetics, 210(3), 789–807. ISSN 0016-6731
 
 Gerard D, Ferrão L (2020). Priors for Genotyping Polyploids. Bioinformatics, 36(6), 1795–1800. ISSN 1367-4803
