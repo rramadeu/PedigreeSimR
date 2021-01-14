@@ -1,9 +1,18 @@
 # PedigreeSimR
-Wrap-up R package to coordinate PedigreeSim simulations for classic breeder mating designs in outcrossing plants.
+Wrap-up R package to coordinate PedigreeSim simulations for classic breeder mating designs in outcrossing plants. This package uses some `updog` package functions for the simulation of the genotypes and GBS data.
 
-PedigreeSim reference/link:
+References:
 
-Voorrips, R. E., & Maliepaard, C. A. (2012). The simulation of meiosis in diploid and tetraploid organisms using various genetic models. BMC bioinformatics, 13(1), 248. [https://www.wur.nl/en/show/Software-PedigreeSim.htm](https://www.wur.nl/en/show/Software-PedigreeSim.htm)
+[PedigreeSim](https://www.wur.nl/en/show/Software-PedigreeSim.htm)
+Voorrips, R. E., & Maliepaard, C. A. (2012). The simulation of meiosis in diploid and tetraploid organisms using various genetic models. BMC bioinformatics, 13(1), 248.
+
+(updog)[https://CRAN.R-project.org/package=updog]
+Gerard D, Ferrão L, Garcia A, Stephens M (2018). Genotyping Polyploids from Messy Sequencing Data. Genetics, 210(3), 789–807. ISSN 0016-6731
+
+Gerard D, Ferrão L (2020). Priors for Genotyping Polyploids. Bioinformatics, 36(6), 1795–1800. ISSN 1367-4803
+
+
+
 
 # Basic usage in R
 ```R
