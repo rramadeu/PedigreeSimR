@@ -1,7 +1,7 @@
 Package: PedigreeSimR
 Type: Package
 Title: Simulate multi-population for linkage analysis in autopolyploids
-Version: 0.1.1025
+Version: 0.1.1026
 Author: Rodrigo R Amadeu and Chaozhi Zheng
 Maintainer: Rodrigo R Amadeu <rramadeu@ufl.edu>
 Description: Desc
