@@ -24,6 +24,8 @@ star_pedigree = function(parents=4,popsize=100,selfs=1,padsize=4){
   pedigree = pedigree[order(pedigree$number),]
   pedigree = pedigree[c(1:(popsize+parents)),-4]
   pedigree = pedigree[order(pedigree$Name),]
+  pedigree = pedigree[c(match(LETTERS[1:parents],pedigree$Name),
+                      (1:nrow(pedigree))[-match(LETTERS[1:parents],pedigree$Name)]),]
   rownames(pedigree) = NULL
   return(pedigree)
 }
