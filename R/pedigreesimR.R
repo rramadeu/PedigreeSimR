@@ -35,11 +35,12 @@
 #' @return nothing
 #'
 #' @examples
+#' \dontrun{
 #' map = 1:100
 #' haplotypes = fake_haplo(m=50,n=100,seed=1234)
 #' pedigree = diallel_pedigree(parents=7,popsize=1000,selfs=2)
 #' pedigreesimR(map,haplotypes,pedigree)
-#'
+#' }
 #' @author Rodrigo R Amadeu, \email{rramadeu@@gmail.com}
 #'
 #' @export

@@ -4,8 +4,14 @@
 \alias{round_pedigree}
 \title{Build Round-Robin Pedigree}
 \usage{
-round_pedigree(parents = NULL, popsize = NULL, subpopsize = NULL,
-  padsize = 4, nextinteger = FALSE, selfs = 0)
+round_pedigree(
+  parents = NULL,
+  popsize = NULL,
+  subpopsize = NULL,
+  padsize = 4,
+  nextinteger = FALSE,
+  selfs = 0
+)
 }
 \arguments{
 \item{parents}{number of parents.}
@@ -14,11 +20,11 @@ round_pedigree(parents = NULL, popsize = NULL, subpopsize = NULL,
 
 \item{subpopsize}{subpopulation size.}
 
+\item{padsize}{string length for the individual name number}
+
 \item{nextinteger}{if TRUE all the subpopulations will have same size, total population size will changed accordingly to the next possible integer, if FALSE sub populations will be unbalenced}
 
 \item{selfs}{number of selfed populations}
-
-\item{padize}{string length for the individual name number}
 }
 \value{
 single round-robin pedigree.
@@ -27,7 +33,7 @@ single round-robin pedigree.
 Build single round-robin pedigree based on number of parents and population size
 }
 \examples{
-haps <- fake_haplo(n=10,map=100,seed=12345)
+haps <- round_pedigree(parents=3,popsize=200)
 
 }
 \author{

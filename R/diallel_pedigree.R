@@ -6,7 +6,7 @@
 #' @param popsize population size.
 #' @param subpopsize subpopulation size.
 #' @param selfs number of selfed populations
-#' @param padize string length for the individual name number
+#' @param padsize string length for the individual name number
 #' @param nextinteger if TRUE all the subpopulations will have same size, total population size will changed accordingly to the next possible integer, if FALSE sub populations will be unbalenced
 #'
 #' @return half-diallel pedigree.

@@ -5,14 +5,14 @@
 #' @param parents number of parents.
 #' @param popsize population size.
 #' @param subpopsize subpopulation size.
-#' @param padize string length for the individual name number
+#' @param padsize string length for the individual name number
 #' @param nextinteger if TRUE all the subpopulations will have same size, total population size will changed accordingly to the next possible integer, if FALSE sub populations will be unbalenced
 #' @param selfs number of selfed populations
 #'
 #' @return single round-robin pedigree.
 #'
 #' @examples
-#' haps <- fake_haplo(n=10,map=100,seed=12345)
+#' haps <- round_pedigree(parents=3,popsize=200)
 #'
 #' @author Rodrigo R Amadeu, \email{rramadeu@@gmail.com}
 #'

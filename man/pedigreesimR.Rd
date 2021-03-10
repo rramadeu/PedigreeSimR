@@ -4,16 +4,37 @@
 \alias{pedigreesimR}
 \title{PedigreeSim Management}
 \usage{
-pedigreesimR(map, haplotypes, pedigree, centromere = NULL,
-  prefPairing = 0, quadrivalents = 0, ploidy = 4,
-  workingfolder = "PedigreeSimR_files", filename = "",
-  mapfunction = "HALDANE", chromosome = "A", sampleHap = FALSE,
-  seed = NULL, allownochiasmata = 1, naturalpairing = 0,
-  parallelquadrivalents = 0, pairedcentromeres = 0, mapwidthpad = 4,
-  epsilon = c(0, 0), missingFreq = c(0, 0), GBS = FALSE,
-  GBSavgdepth = 60, GBSsnpcall = FALSE, GBSseq = 0.001,
-  GBSbias = 0.7, GBSod = 0.005, GBSnc = 1, monoFilter = TRUE,
-  trackErrorSim = FALSE)
+pedigreesimR(
+  map,
+  haplotypes,
+  pedigree,
+  centromere = NULL,
+  prefPairing = 0,
+  quadrivalents = 0,
+  ploidy = 4,
+  workingfolder = "PedigreeSimR_files",
+  filename = "",
+  mapfunction = "HALDANE",
+  chromosome = "A",
+  sampleHap = FALSE,
+  seed = NULL,
+  allownochiasmata = 1,
+  naturalpairing = 0,
+  parallelquadrivalents = 0,
+  pairedcentromeres = 0,
+  mapwidthpad = 4,
+  epsilon = c(0, 0),
+  missingFreq = c(0, 0),
+  GBS = FALSE,
+  GBSavgdepth = 60,
+  GBSsnpcall = FALSE,
+  GBSseq = 0.001,
+  GBSbias = 0.7,
+  GBSod = 0.005,
+  GBSnc = 1,
+  monoFilter = TRUE,
+  trackErrorSim = FALSE
+)
 }
 \arguments{
 \item{map}{vector of the marker position.}
@@ -81,11 +102,12 @@ nothing
 Wrap-up function to run PedigreeSim software, to simulate GBS data, and to do SNP calling with updog package
 }
 \examples{
+\dontrun{
 map = 1:100
 haplotypes = fake_haplo(m=50,n=100,seed=1234)
 pedigree = diallel_pedigree(parents=7,popsize=1000,selfs=2)
 pedigreesimR(map,haplotypes,pedigree)
-
+}
 }
 \author{
 Rodrigo R Amadeu, \email{rramadeu@gmail.com}

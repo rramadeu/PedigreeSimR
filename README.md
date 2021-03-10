@@ -79,3 +79,42 @@ pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=TRUE,GBSavgdepth = 60,GBSseq =
 ## Simulating genotypes with GBS data and doing SNP calling with updog with 2 cores considering the general model (it takes a while)
 pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=TRUE,GBSavgdepth = 60,GBSseq = 0.001,GBSbias = 0.7,GBSod = 0.005,GBSsnpcall=TRUE,GBSnc = 2)
 ```
+
+# Simulation of QTL effect and scanning with diaQTL
+setwd("~/git/PedigreeSim_R_Example")
+library(PedigreeSimR)
+
+## Simulating a scenario of 3 parents, autotetraploid, 200 individuals, 0.3 QTL h2
+## Setting parameters
+parents=3
+ploidy=4
+popsize=200
+map = seq(0,100,.1)
+QTLh2 = 0.3
+
+## Simulation of QTL effects
+```R
+setwd("~/Documents/PedigreeSim_R_Example") #choose a folder for the simulations
+library(PedigreeSimR)
+
+## Simulating a scenario of 3 parents, autotetraploid, 200 individuals, 0.3 QTL h2
+## Setting parameters
+parents=3 #number of parents in the diallel
+ploidy=4 #2 or 4
+popsize=200 #total population size
+map = seq(0,100,.1) #one chromosome at time
+QTLh2 = 0.3 #if interested in FPR investigation, set QTLh2 to 0
+
+## Simulation
+haplotypes = fake_haplo(n=50,m=length(map),seed=1234)
+pedigree = diallel_pedigree(parents=parents,popsize=popsize)
+pedigreesimR(map,haplotypes,pedigree,ploidy=ploidy,workingfolder = "PedigreeSimR_files")
+QTLsim(parents=parents,
+       ploidy=ploidy,
+       workingfolder="PedigreeSimR_files",
+       QTLmarker=NULL,
+       QTLh2=QTLh2,
+       run_diaQTL=TRUE) #FALSE if just interested in creating diaQTL inputs
+       
+## "PedigreeSimR_files" folder is now populated with the files necessary for PolyOrigin sofware (`polyorigin` prefix) and for diaQTL software (`QTL` prefix). 
+```

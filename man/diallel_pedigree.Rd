@@ -4,8 +4,14 @@
 \alias{diallel_pedigree}
 \title{Build Diallel Pedigree}
 \usage{
-diallel_pedigree(parents = NULL, popsize = NULL, subpopsize = NULL,
-  selfs = 0, padsize = 4, nextinteger = FALSE)
+diallel_pedigree(
+  parents = NULL,
+  popsize = NULL,
+  subpopsize = NULL,
+  selfs = 0,
+  padsize = 4,
+  nextinteger = FALSE
+)
 }
 \arguments{
 \item{parents}{number of parents.}
@@ -16,9 +22,9 @@ diallel_pedigree(parents = NULL, popsize = NULL, subpopsize = NULL,
 
 \item{selfs}{number of selfed populations}
 
-\item{nextinteger}{if TRUE all the subpopulations will have same size, total population size will changed accordingly to the next possible integer, if FALSE sub populations will be unbalenced}
+\item{padsize}{string length for the individual name number}
 
-\item{padize}{string length for the individual name number}
+\item{nextinteger}{if TRUE all the subpopulations will have same size, total population size will changed accordingly to the next possible integer, if FALSE sub populations will be unbalenced}
 }
 \value{
 half-diallel pedigree.

@@ -4,19 +4,16 @@
 \alias{self_pedigree}
 \title{Build Self Pedigree}
 \usage{
-self_pedigree(parents = NULL, popsize = NULL, padsize = 4,
-  nextinteger = FALSE)
+self_pedigree(parents = NULL, popsize = NULL, padsize = 4, nextinteger = FALSE)
 }
 \arguments{
 \item{parents}{number of parents.}
 
 \item{popsize}{population size.}
 
+\item{padsize}{string length for the individual name number}
+
 \item{nextinteger}{if TRUE all the subpopulations will have same size, total population size will changed accordingly to the next possible integer, if FALSE sub populations will be unbalenced}
-
-\item{selfs}{number of selfed populations}
-
-\item{padize}{string length for the individual name number}
 }
 \value{
 half-diallel pedigree.
