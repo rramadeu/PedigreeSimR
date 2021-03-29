@@ -80,7 +80,9 @@ pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=TRUE,GBSavgdepth = 60,GBSseq =
 pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=TRUE,GBSavgdepth = 60,GBSseq = 0.001,GBSbias = 0.7,GBSod = 0.005,GBSsnpcall=TRUE,GBSnc = 2)
 ```
 
-# Simulation of QTL effect and scanning with diaQTL
+
+# Simulation of QTL effect and genome scan internally with diaQTL
+```R
 setwd("~/git/PedigreeSim_R_Example")
 library(PedigreeSimR)
 
@@ -114,7 +116,26 @@ QTLsim(parents=parents,
        workingfolder="PedigreeSimR_files",
        QTLmarker=NULL,
        QTLh2=QTLh2,
-       run_diaQTL=TRUE) #FALSE if just interested in creating diaQTL inputs
-       
+       run_diaQTL=FALSE) #FALSE if just interested in creating diaQTL inputs
 ## "PedigreeSimR_files" folder is now populated with the files necessary for PolyOrigin sofware (`polyorigin` prefix) and for diaQTL software (`QTL` prefix). 
-```
+
+## To perform genome scan with diaQTL:
+setwd("~/Documents/PedigreeSim_R_Example/PedigreeSimR_files")
+library(diaQTL)
+data1 <- read_data(genofile="QTLgeno.csv",
+                   pedfile="QTLped.csv",
+                   phenofile="QTLpheno.csv",
+                   ploidy=4,
+                   dominance=1)                   
+params <- set_params(data1,trait="pheno1")
+ans <- scan1(data=data1,trait="pheno1",params=params,n.core=1,dominance = 1)
+scan1_summary(ans)
+
+## Or: read_data, set_params, scan1, scan1_summary functions are encapsulated within QTLsim function when run_diaQTL=TRUE
+QTLsim(parents=parents,
+       ploidy=ploidy,
+       workingfolder="PedigreeSimR_files",
+       QTLmarker=NULL,
+       QTLh2=QTLh2,
+       run_diaQTL=TRUE) 
+ ```
