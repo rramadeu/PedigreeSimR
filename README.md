@@ -95,7 +95,6 @@ map = seq(0,100,.1)
 QTLh2 = 0.3
 
 ## Simulation of QTL effects
-```R
 setwd("~/Documents/PedigreeSim_R_Example") #choose a folder for the simulations
 library(PedigreeSimR)
 
