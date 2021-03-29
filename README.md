@@ -83,7 +83,7 @@ pedigreesimR(map,haplotypes,pedigree,ploidy=4,GBS=TRUE,GBSavgdepth = 60,GBSseq =
 
 # Simulation of QTL effect and genome scan internally with diaQTL
 ```R
-setwd("~/git/PedigreeSim_R_Example")
+setwd("~/Documents/PedigreeSim_R_Example") #choose a folder for the simulations
 library(PedigreeSimR)
 
 ## Simulating a scenario of 3 parents, autotetraploid, 200 individuals, 0.3 QTL h2
@@ -95,8 +95,6 @@ map = seq(0,100,.1)
 QTLh2 = 0.3
 
 ## Simulation of QTL effects
-setwd("~/Documents/PedigreeSim_R_Example") #choose a folder for the simulations
-library(PedigreeSimR)
 
 ## Simulating a scenario of 3 parents, autotetraploid, 200 individuals, 0.3 QTL h2
 ## Setting parameters
