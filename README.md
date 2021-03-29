@@ -129,6 +129,7 @@ ans <- scan1(data=data1,trait="pheno1",params=params,n.core=1,dominance = 1)
 scan1_summary(ans)
 
 ## Or: read_data, set_params, scan1, scan1_summary functions are encapsulated within QTLsim function when run_diaQTL=TRUE
+setwd("~/Documents/PedigreeSim_R_Example/")
 QTLsim(parents=parents,
        ploidy=ploidy,
        workingfolder="PedigreeSimR_files",
