@@ -38,7 +38,7 @@ QTLsim <- function(parents=3,
   time_init = Sys.time()
   ## Getting the states notation
   #F1states = diaQTL::F1codes$State
-  F1states1 = stringr::str_split(F1codes,"-",simplify=TRUE)
+  F1states1 = stringr::str_split(F1codes[,2],"-",simplify=TRUE)
   F1states2 = F1states1[,c(2,1,3,4)]
   F1states3 = F1states1[,c(1,2,4,3)]
   F1states4 = F1states1[,c(2,1,4,3)]
