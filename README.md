@@ -124,8 +124,8 @@ data1 <- read_data(genofile="QTLgeno.csv",
                    phenofile="QTLpheno.csv",
                    ploidy=4,
                    dominance=1)                   
-params <- set_params(data1,trait="pheno1")
-ans <- scan1(data=data1,trait="pheno1",params=params,n.core=1,dominance = 1)
+set_params(data1,trait="pheno1")
+ans <- scan1(data=data1,trait="pheno1",n.core=1,dominance = 1)
 scan1_summary(ans)
 
 ## Or: read_data, set_params, scan1, scan1_summary functions are encapsulated within QTLsim function when run_diaQTL=TRUE
