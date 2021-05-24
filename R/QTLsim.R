@@ -34,6 +34,7 @@ QTLsim <- function(parents=3,
                    QTLmarker=NULL,
                    QTLh2=0.3,
                    run_diaQTL=FALSE){
+  data(F1codes)
   init.wd = getwd()
   time_init = Sys.time()
   ## Getting the states notation
