@@ -31,6 +31,7 @@
 #' @param GBSnc number of cores for the parallelization for SNP calling
 #' @param monoFilter if TRUE filter monomorphic markers from haplotypes
 #' @param trackErrorSim if TRUE create a spreadsheet with the simulate error positions given epsilon and missingData (1 if error, 0 if not)
+#' @param justEssential it will just run the simulation and avoid GBS/Dosage Calling/Parental haplotype
 #'
 #' @return nothing
 #'
@@ -75,7 +76,8 @@ pedigreesimR <- function(map,
                          GBSod = 0.005,
                          GBSnc = 1,
                          monoFilter = TRUE,
-                         trackErrorSim = FALSE){
+                         trackErrorSim = FALSE,
+                         justEssential = FALSE){
 
   ## Creating map file
   mapdf = data.frame(marker=paste0(chromosome,"_",str_pad(1:length(map),width = mapwidthpad,side = "left",pad = "0")),
@@ -294,6 +296,12 @@ pedigreesimR <- function(map,
   ## Formating to PolyOrigin Genotypic Format
   truegenos=cbind(mapdf,read.table(paste0(workingfolder,"/",filename,"pedsim_out_alleledose.dat"),header=TRUE)[,-1])
   write.table(truegenos,file=paste0(workingfolder,"/",filename,"polyorigin_geno.csv"),row.names = FALSE,quote = FALSE,sep=" , ")
+
+  if(justEssential){
+    cat("\n Done!")
+    return()
+  }
+
 
   ## Extracting true haplotype information given pedigree
   truehaplos = read.table(paste0(workingfolder,"/",filename,"pedsim_out_founderalleles.dat"),header=TRUE)[,-1]

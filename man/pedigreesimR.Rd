@@ -33,7 +33,8 @@ pedigreesimR(
   GBSod = 0.005,
   GBSnc = 1,
   monoFilter = TRUE,
-  trackErrorSim = FALSE
+  trackErrorSim = FALSE,
+  justEssential = FALSE
 )
 }
 \arguments{
@@ -94,6 +95,8 @@ pedigreesimR(
 \item{monoFilter}{if TRUE filter monomorphic markers from haplotypes}
 
 \item{trackErrorSim}{if TRUE create a spreadsheet with the simulate error positions given epsilon and missingData (1 if error, 0 if not)}
+
+\item{justEssential}{it will just run the simulation and avoid GBS/Dosage Calling/Parental haplotype}
 }
 \value{
 nothing

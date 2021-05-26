@@ -74,12 +74,12 @@ diallel_pedigree <- function(parents=NULL,popsize=NULL,subpopsize=NULL,selfs=0,p
     f1codeselfs=NULL
     for(i in 1:selfs)
       f1codeselfs = c(f1codeselfs,f1code[1:subpopsize[i]])
-    selfsped = data.frame(Name = paste0(rep(LETTERS[1:selfs],times=subpopsize[1:selfs]),
+    selfsped = data.frame(Name = paste0(rep(LETTERS2[1:selfs],times=subpopsize[1:selfs]),
                                         "x",
-                                        rep(LETTERS[1:selfs],times=subpopsize[1:selfs]),
+                                        rep(LETTERS2[1:selfs],times=subpopsize[1:selfs]),
                                         f1codeselfs),
-                          Parent1 = rep(LETTERS[1:selfs],times=subpopsize[1:selfs]),
-                          Parent2 = rep(LETTERS[1:selfs],times=subpopsize[1:selfs]))
+                          Parent1 = rep(LETTERS2[1:selfs],times=subpopsize[1:selfs]),
+                          Parent2 = rep(LETTERS2[1:selfs],times=subpopsize[1:selfs]))
   }else{
     selfsped=NULL
   }
@@ -89,8 +89,8 @@ diallel_pedigree <- function(parents=NULL,popsize=NULL,subpopsize=NULL,selfs=0,p
   f1codediallel = NULL
   for(i in 1:ncol(combn(parents,2)))
     f1codediallel = c(f1codediallel,f1code[1:subpopsize[i]])
-  Parent1 = LETTERS[rep(combn(parents,2)[1,],times=subpopsize)]
-  Parent2 = LETTERS[rep(combn(parents,2)[2,],times=subpopsize)]
+  Parent1 = LETTERS2[rep(combn(parents,2)[1,],times=subpopsize)]
+  Parent2 = LETTERS2[rep(combn(parents,2)[2,],times=subpopsize)]
   Name = paste0(Parent1,"x",Parent2,f1codediallel)
   diallelped = data.frame(Name=Name,Parent1=Parent1,Parent2=Parent2)
 
