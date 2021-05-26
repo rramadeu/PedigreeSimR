@@ -27,8 +27,14 @@ diallel_pedigree <- function(parents=NULL,popsize=NULL,subpopsize=NULL,selfs=0,p
   if(!is.null(popsize) && !is.null(subpopsize))
     stop(deparse("popsize or subpopsize should be NULL, just indicate one"))
 
+  if(parents>702)
+    stop(deparse("parents should be lower than 702"))
+  tmp <- expand.grid(LETTERS, LETTERS) #expanding for more than 26 parents
+  tmp <- tmp[order(tmp$Var1,tmp$Var2),] #expanding for more than 26 parents
+  LETTERS2 <- c(LETTERS, do.call('paste0',tmp)) #expanding for more than 26 parents
+  
   # Build unknown pedigree
-  pedigree = data.frame(Name = LETTERS[1:parents],
+  pedigree = data.frame(Name = LETTERS2[1:parents],
                         Parent1 = "NA",
                         Parent2 = "NA")
 
