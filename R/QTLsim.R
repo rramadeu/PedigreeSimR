@@ -15,7 +15,7 @@
 #' \dontrun{
 #' map = 1:100
 #' haplotypes = fake_haplo(m=50,n=100,seed=1234)
-#' pedigree = diallel_pedigree(parents=7,popsize=1000,selfs=2)
+#' pedigree = diallel_pedigree(parents=3,popsize=100)
 #' pedigreesimR(map,haplotypes,pedigree,workingfolder="PedigreeSimR_files")
 #' QTLsim(parents=3,
 #'        ploidy=4,
@@ -46,21 +46,21 @@ QTLsim <- function(parents=3,
   F1states = apply(F1states,1,paste0,collapse="|")
   F1code = rep(1:100,4)
 
-  Pedigree=read.table(paste0(workingfolder,"/pedsim_input.ped"),header = TRUE)
+  pedigree=read.table(paste0(workingfolder,"/pedsim_input.ped"),header = TRUE)
   colnames(pedigree) <- c("id","mother","father")
-  founders <- read.table(paste0(workingfolder,"/polyorigin_truevalue_ancestral.csv"),colClasses="character",sep=",")
+  founders <- read.csv(paste0(workingfolder,"/polyorigin_truevalue_ancestral.csv"),colClasses="character",sep=",")
   rownames(founders) <- founders[,1]
-  names(founders) <- as.character(founders[1,])
-  founders <- founders[-1,-1]
-  foundersmap <- founders[,1:2]
-  founders <- founders[,-c(1:(2+parents))]
+  foundersmap <- founders[,1:3]
+  founders <- founders[,-c(1:(3+parents))]
   founders <- apply(founders,2,function(x) gsub('\\s+', '',x)) #rm white space
   founders <- apply(founders,2,function(x) return(F1code[match(x,F1states)]))
   for(j in 1:ncol(founders))
     founders[,j] <- paste0(founders[,j],"=>1")
-  founders <- cbind(markers=rownames(foundersmap),foundersmap,founders)
+  founders <- cbind(foundersmap,founders)
   colnames(founders) <- gsub('\\s+', '',colnames(founders)) #rm white space
   founders[,1] <- gsub('\\s+', '',founders[,1]) #rm white space
+  founders[,2] <- gsub('\\s+', '',founders[,2]) #rm white space
+  founders[,3] <- gsub('\\s+', '',founders[,3]) #rm white space
   names(founders)[1:3] = c("marker","chrom","cM")
   write.csv(founders,file=paste0(workingfolder,"/geno.csv"),row.names=FALSE, quote=FALSE)
 
@@ -118,16 +118,21 @@ QTLsim <- function(parents=3,
                        pedfile="QTLped.csv",
                        phenofile="QTLpheno.csv",
                        ploidy=4,
-                       dominance=1)
+                       dominance=2)
+    par1 <- set_params(data = data1,
+                       trait = "pheno1",
+                       q=0.5,
+                       r=0.1)
+    par2 <- set_params(data = data1,
+                       trait = "pheno1",
+                       q=0.05,
+                       r=0.025)
     flankingMarkers = c(data1@map[sampleQTL-1,1],data1@map[sampleQTL,1])
-
-    params <- set_params(data1,trait="pheno1")
-    ans <- scan1(data=data1,trait="pheno1",params=params,n.core=1,dominance = 1)
-    qtlfitDown <- fitQTL(data=data1,trait="pheno1",params=params,polygenic = FALSE,
-                         marker=flankingMarkers[1])
-    qtlfitUp <- fitQTL(data=data1,trait="pheno1",params=params,polygenic = FALSE,
-                       marker=flankingMarkers[2])
-    qtlfitDown$plotA = qtlfitUp$plotA = NULL
+    ans <- scan1(data=data1,trait="pheno1",params=list(burnIn = max(par1[,1]), nIter = max(par1[,2])),n.core=1,dominance = 1)
+    qtlfitDown <- fitQTL(data=data1,trait="pheno1",params = list(burnIn = max(par2[,1]), nIter = max(par2[,2])),polygenic = FALSE,
+                         qtl=data.frame(marker=flankingMarkers[1],dominance=1))
+    qtlfitUp <- fitQTL(data=data1,trait="pheno1",params = list(burnIn = max(par2[,1]), nIter = max(par2[,2])),polygenic = FALSE,
+                       qtl=data.frame(marker=flankingMarkers[2],dominance=1))
     time_final = Sys.time()
     timeMin=as.numeric(difftime(time_final,time_init,units="min"))
     parameters = data.frame(parents=parents,
@@ -140,7 +145,7 @@ QTLsim <- function(parents=3,
 
     output <- list(parameters=parameters,
                    scan=ans,
-                   params=params,
+                   params=list(par1,par2),
                    qtlfitDown=qtlfitDown,
                    qtlfitUp=qtlfitUp,
                    pheno=pheno,
