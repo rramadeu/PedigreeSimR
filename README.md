@@ -1,5 +1,5 @@
 # PedigreeSimR
-Wrapper R package to coordinate `PedigreeSim` simulations for classic breeder mating designs in outcrossing plants. It also simulates genotypic data from GBS. This package uses some `updog` package functions for the simulation of the genotypes and GBS data.
+Wrapper R package to coordinate `PedigreeSim` simulations for classic breeder mating designs in outcrossing plants. It also simulates genotypic data from GBS. This package uses some `updog` package functions for the simulation of the genotypes and GBS data. To use PedigreeSimR you need to have Java installed in your machine (https://java.com/en/download/help/download_options.html).
 
 # Citation
 
