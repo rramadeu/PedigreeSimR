@@ -1,6 +1,6 @@
 # Disclaimer
 
-This software was originally called `PedigreeSimR` and it has been renamed for `diaQTLSimulate`; please visit the repository [https://github.com/rramadeu/diaQTLSimulations](diaQTLSimulations) webpage for further information.
+This software was originally called `PedigreeSimR` and it has been renamed for `diaQTLSimulate`; please visit the repository [https://github.com/rramadeu/diaQTLSimulate](diaQTLSimulate) webpage for further information.
 
 Please note that `diaQTLSimulate` and this repository are not affiliated with `PedigreeSim` software or its authors. If you are looking for the `PedigreeSim` software please go to [(https://www.wur.nl/en/show/Software-PedigreeSim.htm](https://www.wur.nl/en/show/Software-PedigreeSim.htm).
 
